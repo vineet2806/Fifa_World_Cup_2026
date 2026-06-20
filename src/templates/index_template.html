@@ -7,7 +7,6 @@
 <meta name="description" content="Unofficial FIFA World Cup 2026 fan dashboard. Live scores, standings, schedule, stats, and AI insights. Data refreshed daily.">
 <meta name="robots" content="index,follow">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.11.0/css/flag-icons.min.css" crossorigin="anonymous">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -132,10 +131,12 @@ input,select{font-family:inherit}
 #stats{background-image:url('images/fans.svg')}
 
 
-/* Flag icon sizing */
-.fi-sm{width:1.2em;height:.9em;vertical-align:middle;margin-right:.25em;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.1)}
-.fi-lg{width:2.2em;height:1.65em;vertical-align:middle;border-radius:4px;box-shadow:0 0 0 1px rgba(255,255,255,.1)}
-.team-cell .fi-sm{margin-right:.35em}
+/* Flag image sizing */
+.team-cell img[alt*="flag"]{margin-right:.35em}
+.hero-flag img{width:32px;height:22px}
+.compare-flag-lg img{width:48px;height:34px;border-radius:4px}
+.fav-banner-flag img{width:44px;height:30px}
+.team-flag img{width:28px;height:20px}
 
 /* ── HERO ── */
 #hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:var(--nav-h) 20px 60px;position:relative;overflow:hidden}
@@ -793,7 +794,7 @@ function enrichMatchTimes(){
 enrichMatchTimes();
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-const FLAG_CLASS = {
+const FLAG_IMG = {
   ALG:'dz', ARG:'ar', AUS:'au', AUT:'at', BEL:'be', BIH:'ba', BRA:'br', CAN:'ca', CIV:'ci',
   COD:'cd', COL:'co', CPV:'cv', CRO:'hr', CUW:'cw', CZE:'cz', ECU:'ec', EGY:'eg', ENG:'gb-eng',
   ESP:'es', FRA:'fr', GER:'de', GHA:'gh', HAI:'ht', IRN:'ir', IRQ:'iq', JOR:'jo', JPN:'jp',
@@ -803,9 +804,10 @@ const FLAG_CLASS = {
 };
 
 function flagIcon(id, size='sm'){
-  const cc = FLAG_CLASS[id];
+  const cc = FLAG_IMG[id];
+  const dim = size==='lg' ? 'width:32px;height:22px' : 'width:18px;height:13px';
   if(!cc) return (TEAMS[id] && TEAMS[id].flag) ? `<span style=\"font-size:1.1em\">${TEAMS[id].flag}</span>` : '';
-  return `<span class=\"fi fi-${cc} fi-${size}\" aria-label=\"${id} flag\"></span>`;
+  return `<img src=\"flags/${id}.png\" alt=\"${id} flag\" style=\"${dim};object-fit:cover;border-radius:2px;vertical-align:middle;box-shadow:0 0 0 1px rgba(255,255,255,.1)\">`;
 }
 
 function team(id){ return TEAMS[id] || {id, name:id, flag:'🏳️'} }
