@@ -2,8 +2,8 @@ name: Daily Dashboard Refresh
 
 on:
   schedule:
-    # 6:00 AM IST = 00:30 UTC
-    - cron: "30 0 * * *"
+    # Every 5 minutes — public repo gets unlimited GitHub Actions minutes
+    - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
       force_refresh:
