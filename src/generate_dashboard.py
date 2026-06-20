@@ -832,6 +832,26 @@ def load_template() -> str:
     return None
 
 
+def _inline_assets(html: str) -> str:
+    """Replace local flag/image paths with base64 data URIs for offline use."""
+    import base64
+    flags_dir = PUBLIC_DIR / "flags"
+    images_dir = PUBLIC_DIR / "images"
+    # Inline flags
+    for f in flags_dir.glob("*.png"):
+        path = f"flags/{f.name}"
+        if path in html:
+            b64 = base64.b64encode(f.read_bytes()).decode("ascii")
+            html = html.replace(path, f"data:image/png;base64,{b64}")
+    # Inline SVG backgrounds
+    for f in images_dir.glob("*.svg"):
+        path = f"images/{f.name}"
+        if path in html:
+            b64 = base64.b64encode(f.read_bytes()).decode("ascii")
+            html = html.replace(path, f"data:image/svg+xml;base64,{b64}")
+    return html
+
+
 def generate_html(data: dict) -> str:
     """Inject data JSON into HTML template."""
     data_json = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
@@ -839,6 +859,7 @@ def generate_html(data: dict) -> str:
     template = load_template()
     if template and "__WC2026_DATA_JSON__" in template:
         html = template.replace("__WC2026_DATA_JSON__", data_json)
+        html = _inline_assets(html)
         log.info("HTML generated from template")
         return html
 
