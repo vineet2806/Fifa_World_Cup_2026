@@ -1563,7 +1563,10 @@ function renderFooter(){
   const ts = m.generatedAt ? new Date(m.generatedAt).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',dateStyle:'medium',timeStyle:'short'}) : 'Unknown';
   document.getElementById('footerUpdated').textContent = `🕐 Last updated: ${ts} IST`;
 
-  const warns = m.dataQualityWarnings||[];
+  // Only show warnings that are actually critical to the user.
+  // "HTTP fetches failed — using manual fallback" is expected (no live data source exists yet),
+  // so suppress it to avoid alarming visitors.
+  const warns = (m.dataQualityWarnings||[]).filter(w => !/HTTP fetches failed|using manual fallback/i.test(w));
   if(warns.length){
     document.getElementById('dataWarnings').innerHTML = `<div style="font-size:.7rem;color:var(--gold);background:var(--gold-d);padding:8px 12px;border-radius:var(--r);border:1px solid rgba(251,191,36,.25);max-width:300px">
       ⚠️ ${warns[0]}
