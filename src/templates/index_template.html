@@ -810,6 +810,22 @@ function flagIcon(id, size='sm'){
   return `<img src=\"flags/${id}.png\" alt=\"${id} flag\" style=\"${dim};object-fit:cover;border-radius:2px;vertical-align:middle;box-shadow:0 0 0 1px rgba(255,255,255,.1)\">`;
 }
 
+
+const HISTORY_FLAG = {
+  'Argentina':'ARG','Australia':'AUS','Belgium':'BEL','Brazil':'BRA','Canada':'CAN','Croatia':'CRO',
+  'France':'FRA','Germany':'GER','Ghana':'GHA','Italy':'ITA','Japan':'JPN','Mexico':'MEX',
+  'Netherlands':'NED','Portugal':'POR','Qatar':'QAT','Russia':'RUS','Saudi Arabia':'KSA',
+  'South Africa':'RSA','South Korea':'KOR','Spain':'ESP','Sweden':'SWE','Tunisia':'TUN',
+  'USA':'USA','West Germany':'GER','Uruguay':'URU'
+};
+
+function historyFlagImg(name, size='sm'){
+  const code = HISTORY_FLAG[name] || (name.length<=3 ? name.toUpperCase() : '');
+  if(!code) return '';
+  const dim = size==='lg' ? 'width:24px;height:17px' : 'width:18px;height:13px';
+  return `<img src="flags/${code}.png" alt="${name} flag" style="${dim};object-fit:cover;border-radius:2px;vertical-align:middle;box-shadow:0 0 0 1px rgba(255,255,255,.1)" loading="lazy">`;
+}
+
 function team(id){ return TEAMS[id] || {id, name:id, flag:'🏳️'} }
 function venue(id){ return VENUES_MAP[id] || {name:id||'TBD', city:''} }
 
@@ -1400,14 +1416,21 @@ function renderCompare(){
 // ── History ───────────────────────────────────────────────────────────────────
 function renderHistory(){
   const el = document.getElementById('historyGrid');
-  el.innerHTML = (D.historicalWorldCups||[]).sort((a,b)=>b.year-a.year).map(h => `
+  const hostFlags = {
+    'Mexico':'MEX','Italy':'ITA','USA':'USA','France':'FRA','Japan/South Korea':'JPN,KOR',
+    'Germany':'GER','South Africa':'RSA','Brazil':'BRA','Russia':'RUS','Qatar':'QAT'
+  };
+  el.innerHTML = (D.historicalWorldCups||[]).sort((a,b)=>b.year-a.year).map(h => {
+    const hostFlagCodes = (hostFlags[h.host]||'').split(',').filter(Boolean);
+    const hostFlagHtml = hostFlagCodes.map(c => `<img src="flags/${c}.png" alt="${c} flag" style="width:16px;height:12px;object-fit:cover;border-radius:2px;vertical-align:middle;margin-left:4px;box-shadow:0 0 0 1px rgba(255,255,255,.1)" loading="lazy">`).join('');
+    return `
     <div class="history-card">
       <div class="history-year">${h.year}</div>
-      <div class="history-host">📍 ${h.host} ${h.hostFlag||''}</div>
+      <div class="history-host">📍 ${h.host}${hostFlagHtml}</div>
       <div class="history-final">
         <div>
-          <div class="history-winner">${h.winnerFlag||''} ${h.winner} <span class="text-gold">🏆</span></div>
-          <div class="history-runnerup">vs ${h.runnerUpFlag||''} ${h.runnerUp}</div>
+          <div class="history-winner">${historyFlagImg(h.winner)} ${h.winner} <span class="text-gold">🏆</span></div>
+          <div class="history-runnerup">vs ${historyFlagImg(h.runnerUp)} ${h.runnerUp}</div>
         </div>
         <div class="history-score">${h.finalScore}</div>
       </div>
