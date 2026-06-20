@@ -664,7 +664,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
   <div class="footer-grid">
     <div>
       <div class="footer-logo">⚽ WC2026 Fan Dashboard</div>
-      <p class="footer-desc">An unofficial fan dashboard for the FIFA World Cup 2026. Data is refreshed daily at 6:00 AM IST from public sources. Not affiliated with FIFA.</p>
+      <p class="footer-desc">An unofficial fan dashboard for the FIFA World Cup 2026. Data refreshes automatically every 5 minutes from public sources. Not affiliated with FIFA.</p>
     </div>
     <div>
       <div class="footer-heading">Data Sources</div>
@@ -676,7 +676,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
     <div>
       <div class="footer-heading">About</div>
       <a class="footer-link" href="https://github.com" target="_blank" rel="noopener">View on GitHub</a>
-      <p class="footer-desc" style="margin-top:8px">Refreshed daily at 6:00 AM IST via GitHub Actions → Azure Static Web Apps.</p>
+      <p class="footer-desc" style="margin-top:8px">Refreshed automatically every 5 minutes via GitHub Actions → Azure Static Web Apps.</p>
       <div id="footerUpdated" class="footer-updated" style="margin-top:12px"></div>
     </div>
   </div>
@@ -711,6 +711,38 @@ let favTeam = localStorage.getItem('wc2026_fav') || '';
 // Build lookup maps
 (D.teams||[]).forEach(t => TEAMS[t.id] = t);
 (D.venues||[]).forEach(v => VENUES_MAP[v.id] = v);
+
+// ── Dynamic LIVE/FT status based on real clock ────────────────────────────────
+// Recomputes each match's status & minute from its kickoff time, so even with
+// static fallback data the LIVE minute progresses in real time.
+function recomputeMatchStatuses(){
+  const now = Date.now();
+  (D.matches||[]).forEach(m => {
+    if(!m.date || !m.timeUTC) return;
+    const [h, min] = (m.timeUTC||'').split(':').map(Number);
+    if(isNaN(h)) return;
+    const kickoff = new Date(m.date + 'T' + String(h).padStart(2,'0') + ':' + String(min||0).padStart(2,'0') + ':00Z').getTime();
+    if(isNaN(kickoff)) return;
+    const minsSinceKickoff = Math.floor((now - kickoff) / 60000);
+
+    if(minsSinceKickoff < 0){
+      m.status = 'UPCOMING';
+      m.minute = null;
+    } else if(minsSinceKickoff <= 45){
+      m.status = 'LIVE'; m.minute = Math.max(1, minsSinceKickoff);
+    } else if(minsSinceKickoff <= 60){
+      m.status = 'HT'; m.minute = 45;
+    } else if(minsSinceKickoff <= 110){
+      m.status = 'LIVE'; m.minute = Math.min(90, minsSinceKickoff - 15);
+    } else {
+      // Only auto-mark FT if no real score exists; otherwise leave FT data intact
+      if(m.status !== 'FT'){ m.status = 'FT'; m.minute = null; }
+    }
+  });
+}
+recomputeMatchStatuses();
+// Re-evaluate every 30 seconds so the LIVE minute ticks up on screen
+setInterval(function(){ recomputeMatchStatuses(); if(typeof renderToday==='function') renderToday(); }, 30000);
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function team(id){ return TEAMS[id] || {id, name:id, flag:'🏳️'} }
