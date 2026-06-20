@@ -50,17 +50,42 @@ CACHE_TTL_HOURS = 6
 # Public data sources - all CC0 / open data
 SOURCES = {
     "schedule": {
-        "url": "https://raw.githubusercontent.com/mjwebmaster/world-cup-2026-schedule-data/main/data/wc26_schedule.json",
+        "url": "https://raw.githubusercontent.com/mjwebmaster/world-cup-2026-schedule-data/main/world-cup-2026-schedule.json",
         "cache": "schedule.json",
         "name": "mjwebmaster/world-cup-2026-schedule-data",
         "license": "public"
     },
     "openfootball": {
-        "url": "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/wc.json",
+        "url": "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json",
         "cache": "openfootball.json",
         "name": "openfootball/worldcup.json",
         "license": "CC0"
     },
+}
+
+# Team name variations across public sources -> canonical fallback team IDs
+TEAM_NAME_TO_ID = {
+    # Direct English names
+    "Mexico": "MEX", "South Korea": "KOR", "Korea Republic": "KOR", "Korea, Republic of": "KOR",
+    "Czech Republic": "CZE", "Czechia": "CZE",
+    "South Africa": "RSA",
+    "Canada": "CAN",
+    "Bosnia and Herzegovina": "BIH", "Bosnia & Herzegovina": "BIH", "Bosnia-Herzegovina": "BIH",
+    "Switzerland": "SUI",
+    "Qatar": "QAT",
+    "Brazil": "BRA", "Morocco": "MAR", "Scotland": "SCO", "Haiti": "HAI",
+    "USA": "USA", "United States": "USA",
+    "Paraguay": "PAR", "Australia": "AUS", "Turkey": "TUR", "Türkiye": "TUR",
+    "Germany": "GER", "Ivory Coast": "CIV", "Côte d'Ivoire": "CIV", "Cote d'Ivoire": "CIV",
+    "Ecuador": "ECU", "Curaçao": "CUW", "Curacao": "CUW",
+    "Netherlands": "NED", "Japan": "JPN", "Sweden": "SWE", "Tunisia": "TUN",
+    "Belgium": "BEL", "Egypt": "EGY", "Iran": "IRN", "New Zealand": "NZL",
+    "Spain": "ESP", "Uruguay": "URU", "Saudi Arabia": "KSA", "Cape Verde": "CPV", "Cabo Verde": "CPV",
+    "France": "FRA", "Norway": "NOR", "Senegal": "SEN", "Iraq": "IRQ",
+    "Argentina": "ARG", "Portugal": "POR", "Algeria": "ALG", "Ghana": "GHA",
+    "England": "ENG", "Denmark": "DEN", "Austria": "AUT", "Jordan": "JOR",
+    "Colombia": "COL", "Croatia": "CRO", "Panama": "PAN", "Uzbekistan": "UZB",
+    "DR Congo": "COD", "Congo DR": "COD", "Congo, DR": "COD", "Democratic Republic of the Congo": "COD",
 }
 
 # IST = UTC+5:30
@@ -164,6 +189,42 @@ def load_fallback() -> dict:
         return {}
 
 
+def _team_name_to_id(name: str) -> str:
+    """Map a team name from public sources to our canonical team ID."""
+    if not name:
+        return ""
+    # Exact match
+    if name in TEAM_NAME_TO_ID:
+        return TEAM_NAME_TO_ID[name]
+    # Case-insensitive match
+    lookup = {k.lower(): v for k, v in TEAM_NAME_TO_ID.items()}
+    return lookup.get(name.strip().lower(), name)
+
+
+def _parse_utc_time(time_str: str) -> str:
+    """Extract HH:MM UTC from strings like '13:00 UTC-6' or '15:00'."""
+    if not time_str:
+        return ""
+    parts = time_str.strip().split()
+    if parts:
+        return parts[0]
+    return ""
+
+
+def _et_to_utc(time_et: str) -> str:
+    """Convert Eastern Time HH:MM to UTC HH:MM (ET = UTC-4 or UTC-5 depending on DST).
+    For June World Cup dates we are in EDT (UTC-4)."""
+    if not time_et:
+        return ""
+    try:
+        h, m = map(int, time_et.split(":"))
+        # June = UTC-4 (EDT)
+        utc_h = (h + 4) % 24
+        return f"{utc_h:02d}:{m:02d}"
+    except Exception:
+        return ""
+
+
 def normalize_schedule_data(raw: dict) -> list:
     """Normalize mjwebmaster schedule JSON to our match format."""
     matches = []
@@ -171,18 +232,28 @@ def normalize_schedule_data(raw: dict) -> list:
         raw = raw.get("matches", raw.get("schedule", []))
     for m in raw:
         try:
+            stage = m.get("stage", "").strip().lower()
+            group = m.get("group", "")
+            if stage != "group stage" or not group or len(group) != 1:
+                # Skip knockout placeholder entries
+                continue
+            team_a = _team_name_to_id(m.get("team_a", ""))
+            team_b = _team_name_to_id(m.get("team_b", ""))
+            if not team_a or not team_b:
+                continue
+            # The source uses match_number as a stable ID across all 104 matches.
             matches.append({
-                "id": str(m.get("id", m.get("match_id", ""))),
-                "group": m.get("group", m.get("stage", "")),
-                "matchday": int(m.get("matchday", m.get("round", 1))),
-                "date": m.get("date", m.get("match_date", "")),
-                "timeUTC": m.get("time_utc", m.get("time", "")),
-                "team1": m.get("home_team_code", m.get("team1", "")),
-                "team2": m.get("away_team_code", m.get("team2", "")),
-                "score1": m.get("home_score", m.get("score1")),
-                "score2": m.get("away_score", m.get("score2")),
-                "status": m.get("status", "UPCOMING"),
-                "venue": m.get("venue", m.get("stadium", "")),
+                "id": f"m{int(m.get('match_number', 0)):03d}",
+                "group": group,
+                "matchday": 1,
+                "date": m.get("date", ""),
+                "timeUTC": _et_to_utc(m.get("time_et", "")),
+                "team1": team_a,
+                "team2": team_b,
+                "score1": None,
+                "score2": None,
+                "status": "UPCOMING",
+                "venue": m.get("venue", ""),
                 "city": m.get("city", ""),
             })
         except Exception:
@@ -193,46 +264,162 @@ def normalize_schedule_data(raw: dict) -> list:
 def normalize_openfootball_data(raw: dict) -> list:
     """Normalize openfootball JSON to our match format."""
     matches = []
-    rounds = raw.get("rounds", raw.get("groups", []))
-    for r in rounds:
-        matchday = r.get("name", "")
-        for m in r.get("matches", []):
-            try:
-                score = m.get("score", {})
-                matches.append({
-                    "id": hashlib.md5(f"{m.get('date','')}_{m.get('team1',{}).get('code','')}_{m.get('team2',{}).get('code','')}".encode()).hexdigest()[:8],
-                    "group": r.get("group", ""),
-                    "matchday": matchday,
-                    "date": m.get("date", ""),
-                    "timeUTC": m.get("time", ""),
-                    "team1": m.get("team1", {}).get("code", ""),
-                    "team2": m.get("team2", {}).get("code", ""),
-                    "score1": score.get("ft", [None, None])[0] if score else None,
-                    "score2": score.get("ft", [None, None])[1] if score else None,
-                    "status": "FT" if score.get("ft") else "UPCOMING",
-                    "venue": m.get("stadium", {}).get("name", "") if isinstance(m.get("stadium"), dict) else "",
-                    "city": m.get("city", ""),
-                })
-            except Exception:
+    for m in raw.get("matches", []):
+        try:
+            group_field = m.get("group", "")
+            if not isinstance(group_field, str) or not group_field.startswith("Group"):
+                # Skip knockout placeholders (W101, 1A, etc.)
                 continue
+            group_letter = group_field.replace("Group", "").strip()
+            score = m.get("score") or {}
+            ft = score.get("ft")
+            team1 = _team_name_to_id(m.get("team1", ""))
+            team2 = _team_name_to_id(m.get("team2", ""))
+            if not team1 or not team2:
+                continue
+            matches.append({
+                "id": hashlib.md5(f"{m.get('date','')}_{team1}_{team2}".encode()).hexdigest()[:8],
+                "group": group_letter,
+                "matchday": 1,
+                "date": m.get("date", ""),
+                "timeUTC": _parse_utc_time(m.get("time", "")),
+                "team1": team1,
+                "team2": team2,
+                "score1": ft[0] if ft else None,
+                "score2": ft[1] if ft else None,
+                "status": "FT" if ft else "UPCOMING",
+                "venue": m.get("ground", ""),
+                "city": "",
+            })
+        except Exception:
+            continue
     return matches
 
 
+def _venue_name_to_id(name: str, venues: list) -> str:
+    """Map a venue/stadium name from public sources to our canonical venue ID."""
+    if not name:
+        return ""
+    lookup = {}
+    for v in venues:
+        lookup[v["name"].lower()] = v["id"]
+        lookup[v["city"].lower()] = v["id"]
+    # Source-specific aliases
+    aliases = {
+        "estadio azteca": "v14",
+        "azteca": "v14",
+        "metlife stadium": "v01",
+        "metlife": "v01",
+        "new york/new jersey (east rutherford)": "v01",
+        "new york/new jersey": "v01",
+        "east rutherford": "v01",
+        "at&t stadium": "v02",
+        "dallas stadium": "v02",
+        "arlington": "v02",
+        "sofi stadium": "v03",
+        "los angeles stadium": "v03",
+        "inglewood": "v03",
+        "hard rock stadium": "v04",
+        "miami stadium": "v04",
+        "miami gardens": "v04",
+        "mercedes-benz stadium": "v05",
+        "atlanta stadium": "v05",
+        "arrowhead stadium": "v06",
+        "kansas city stadium": "v06",
+        "nrg stadium": "v07",
+        "houston stadium": "v07",
+        "levi's stadium": "v08",
+        "san francisco bay area stadium": "v08",
+        "santa clara": "v08",
+        "lumen field": "v09",
+        "seattle stadium": "v09",
+        "lincoln financial field": "v10",
+        "philadelphia stadium": "v10",
+        "gillette stadium": "v11",
+        "boston stadium": "v11",
+        "foxborough": "v11",
+        "bc place": "v12",
+        "bc place vancouver": "v12",
+        "vancouver": "v12",
+        "bmo field": "v13",
+        "toronto stadium": "v13",
+        "toronto": "v13",
+        "estadio akron": "v15",
+        "estadio guadalajara": "v15",
+        "guadalajara (zapopan)": "v15",
+        "zapopan": "v15",
+        "estadio bbva": "v16",
+        "estadio monterrey": "v16",
+        "monterrey (guadalupe)": "v16",
+        "guadalupe": "v16",
+        "mexico city": "v14",
+        "guadalajara": "v15",
+        "monterrey": "v16",
+    }
+    lookup.update(aliases)
+    return lookup.get(name.strip().lower(), "")
+
+
+def _enrich_matches_with_fallback_venues(matches: list, venues: list) -> list:
+    """Map venue names in fetched matches to canonical fallback venue IDs/cities."""
+    out = []
+    venue_map = {v["id"]: v for v in venues}
+    for m in matches:
+        m = dict(m)
+        venue_id = _venue_name_to_id(m.get("venue", ""), venues)
+        if venue_id:
+            m["venue"] = venue_id
+            v = venue_map.get(venue_id, {})
+            m["city"] = v.get("city", m.get("city", ""))
+        out.append(m)
+    return out
+
+
+def _normalize_venue_ids(matches: list, venues: list) -> list:
+    """Ensure every match venue field is a known venue ID; leave unknowns as-is."""
+    valid_ids = {v["id"] for v in venues}
+    out = []
+    for m in matches:
+        m = dict(m)
+        if m.get("venue") and m["venue"] not in valid_ids:
+            mapped = _venue_name_to_id(m["venue"], venues)
+            if mapped:
+                m["venue"] = mapped
+                v = next((v for v in venues if v["id"] == mapped), {})
+                m["city"] = v.get("city", m.get("city", ""))
+        out.append(m)
+    return out
+
+
 def merge_matches(fallback_matches: list, fetched_matches: list) -> list:
-    """Merge fetched match data into fallback, updating scores and status."""
+    """Merge fetched match data into fallback, updating scores and status.
+
+    Matches are keyed by (date, team1_id, team2_id) so that sources using
+    full names or different IDs can still update the canonical fallback rows.
+    """
     if not fetched_matches:
         return fallback_matches
 
+    def _key(m):
+        return (
+            m.get("date", ""),
+            m.get("team1", ""),
+            m.get("team2", ""),
+        )
+
     fetched_by_key = {}
     for m in fetched_matches:
-        key = f"{m.get('date','')}_{m.get('team1','')}_{m.get('team2','')}"
-        fetched_by_key[key] = m
+        fetched_by_key[_key(m)] = m
 
     merged = []
     for m in fallback_matches:
-        key = f"{m.get('date','')}_{m.get('team1','')}_{m.get('team2','')}"
-        if key in fetched_by_key:
-            fm = fetched_by_key[key]
+        key = _key(m)
+        fm = fetched_by_key.get(key)
+        if not fm:
+            # Try reversed home/away alignment
+            rev_key = (key[0], key[2], key[1])
+            fm = fetched_by_key.get(rev_key)
+        if fm:
             # Update scores if fetched data has them
             if fm.get("score1") is not None:
                 m = dict(m)
@@ -500,27 +687,41 @@ def collect_data() -> dict:
     warnings = []
     fetched_matches = []
 
+    schedule_matches = []
+    openfootball_matches = []
+
     if HAS_REQUESTS:
         schedule_raw = fetch_with_cache("schedule")
         if schedule_raw:
-            fetched_matches = normalize_schedule_data(schedule_raw)
-            log.info(f"Schedule data: {len(fetched_matches)} matches")
-            warnings.append(f"Schedule data fetched from mjwebmaster GitHub (CC0)")
-        else:
-            ob_raw = fetch_with_cache("openfootball")
-            if ob_raw:
-                fetched_matches = normalize_openfootball_data(ob_raw)
-                log.info(f"openfootball data: {len(fetched_matches)} matches")
-            else:
-                warnings.append("All HTTP fetches failed — using manual fallback data only")
+            schedule_matches = normalize_schedule_data(schedule_raw)
+            log.info(f"Schedule data: {len(schedule_matches)} matches")
+            warnings.append("Schedule data fetched from mjwebmaster GitHub (public)")
+            fetched_matches.extend(schedule_matches)
+
+        ob_raw = fetch_with_cache("openfootball")
+        if ob_raw:
+            openfootball_matches = normalize_openfootball_data(ob_raw)
+            log.info(f"openfootball data: {len(openfootball_matches)} matches")
+            warnings.append("Match results fetched from openfootball/worldcup.json (CC0)")
+            fetched_matches.extend(openfootball_matches)
+
+        if not schedule_matches and not openfootball_matches:
+            warnings.append("All HTTP fetches failed — using manual fallback data only")
     else:
         warnings.append("requests library not installed — using manual fallback data only")
 
-    # Merge fetched data with fallback
-    matches = merge_matches(
-        fallback.get("matches", []),
-        fetched_matches
-    )
+    # The manual fallback contains the verified official 2026 draw, so use it as
+    # the authoritative schedule. Overlay live scores from openfootball (and optionally
+    # schedule source) when the team+date pairing matches.
+    matches = fallback.get("matches", [])
+    if openfootball_matches:
+        matches = merge_matches(matches, openfootball_matches)
+    if schedule_matches:
+        matches = merge_matches(matches, schedule_matches)
+
+    # Ensure every match uses a canonical venue ID the frontend understands.
+    matches = _normalize_venue_ids(matches, fallback.get("venues", []))
+    matches = _enrich_matches_with_fallback_venues(matches, fallback.get("venues", []))
 
     # Recompute standings from merged match results
     standings = compute_standings(matches, fallback.get("teams", []))
