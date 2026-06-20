@@ -202,13 +202,33 @@ def _team_name_to_id(name: str) -> str:
 
 
 def _parse_utc_time(time_str: str) -> str:
-    """Extract HH:MM UTC from strings like '13:00 UTC-6' or '15:00'."""
+    """Convert a source time with offset to canonical UTC HH:MM.
+
+    Source formats:
+      - openfootball: '13:00 UTC-6'  -> '19:00'
+      - schedule:     '15:00' (ET)    -> already handled elsewhere
+    """
     if not time_str:
         return ""
     parts = time_str.strip().split()
-    if parts:
-        return parts[0]
-    return ""
+    if not parts:
+        return ""
+    try:
+        h, m = map(int, parts[0].split(":"))
+    except Exception:
+        return ""
+    offset_h = 0
+    if len(parts) > 1:
+        offset_part = parts[1].upper()
+        if offset_part.startswith("UTC"):
+            try:
+                offset_h = int(offset_part[3:])
+            except Exception:
+                pass
+    utc_mins = (h * 60 + m - offset_h * 60) % 1440
+    utc_h = utc_mins // 60
+    utc_m = utc_mins % 60
+    return f"{utc_h:02d}:{utc_m:02d}"
 
 
 def _parse_utc_offset(time_str: str) -> str:
@@ -257,7 +277,7 @@ def normalize_schedule_data(raw: dict) -> list:
                 "group": group,
                 "matchday": 1,
                 "date": m.get("date", ""),
-                "timeUTC": _et_to_utc(m.get("time_et", "")),
+                "timeUTC": _parse_utc_time(m.get("time_et", "") + " UTC-4"),
                 "team1": team_a,
                 "team2": team_b,
                 "score1": None,

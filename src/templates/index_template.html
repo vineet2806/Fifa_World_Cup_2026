@@ -509,8 +509,8 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
     <div id="scheduleTableWrap" class="schedule-table-wrap card card-sm" style="padding:0">
       <table class="schedule-table" role="table" aria-label="Match schedule">
         <thead><tr>
-          <th>Date (IST)</th>
-          <th>Time IST</th>
+          <th>Date (UTC)</th>
+          <th>IST Time</th>
           <th>Team 1</th>
           <th style="text-align:center">Score</th>
           <th>Team 2</th>
@@ -719,10 +719,9 @@ function recomputeMatchStatuses(){
   const now = Date.now();
   (D.matches||[]).forEach(m => {
     if(!m.date || !m.timeUTC) return;
-    const [h, min] = (m.timeUTC||'').split(':').map(Number);
-    if(isNaN(h)) return;
-    const kickoff = new Date(m.date + 'T' + String(h).padStart(2,'0') + ':' + String(min||0).padStart(2,'0') + ':00Z').getTime();
-    if(isNaN(kickoff)) return;
+    const dt = getMatchDT(m);
+    if(!dt) return;
+    const kickoff = dt.getTime();
     const minsSinceKickoff = Math.floor((now - kickoff) / 60000);
 
     if(minsSinceKickoff < 0){
@@ -743,6 +742,36 @@ function recomputeMatchStatuses(){
 recomputeMatchStatuses();
 // Re-evaluate every 30 seconds so the LIVE minute ticks up on screen
 setInterval(function(){ recomputeMatchStatuses(); if(typeof renderToday==='function') renderToday(); }, 30000);
+
+// Enrich every match with IST and local-display fields
+function enrichMatchTimes(){
+  (D.matches||[]).forEach(m => {
+    if(!m.date || !m.timeUTC) return;
+    const [h, min] = (m.timeUTC||'').split(':').map(Number);
+    if(isNaN(h)) return;
+    // timeUTC is already in UTC; compute IST (UTC+5:30)
+    const utcMins = h*60 + (min||0);
+    const istMins = (utcMins + 330) % 1440;
+    const istH = Math.floor(istMins/60), istM = istMins%60;
+    m.timeIST = pad(istH) + ':' + pad(istM);
+    // Compute local date/time at host venue for display
+    const offsetStr = m.timeOffset || 'UTC+0';
+    const sign = offsetStr.includes('-') ? -1 : 1;
+    const offsetH = parseInt((offsetStr.match(/[+-]?\d+/)||['0'])[0], 10) || 0;
+    const localMins = (utcMins + sign*offsetH*60 + 1440) % 1440;
+    const locH = Math.floor(localMins/60), locM = localMins%60;
+    // Local date may differ from UTC date
+    let localDayOffset = 0;
+    const rawLocalMins = utcMins + sign*offsetH*60;
+    if(rawLocalMins < 0) localDayOffset = -1;
+    else if(rawLocalMins >= 1440) localDayOffset = 1;
+    const base = new Date(m.date + 'T00:00:00Z');
+    base.setUTCDate(base.getUTCDate() + localDayOffset);
+    m.localDate = base.toISOString().slice(0,10);
+    m.timeLocalDisplay = pad(locH) + ':' + pad(locM);
+  });
+}
+enrichMatchTimes();
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function team(id){ return TEAMS[id] || {id, name:id, flag:'🏳️'} }
@@ -1034,8 +1063,11 @@ function renderSchedule(){
       const scoreCell = m.status==='FT'||m.status==='LIVE'||m.status==='HT'
         ? `<td class="score-cell">${m.score1??0} – ${m.score2??0}</td>`
         : `<td class="score-cell" style="color:var(--text-d)">vs</td>`;
+      const localTimeLabel = m.timeLocalDisplay
+        ? `<span style="color:var(--text-d);font-size:.68rem;display:block;margin-top:2px">${m.localDate||m.date} · ${m.timeLocalDisplay} ${m.timeOffset||''}</span>`
+        : '';
       return `<tr>
-        <td style="white-space:nowrap;font-size:.78rem">${m.date||''}</td>
+        <td style="white-space:nowrap;font-size:.78rem">${m.date||''}${localTimeLabel}</td>
         <td style="font-size:.78rem;white-space:nowrap">${m.timeIST||'—'} IST</td>
         <td><div class="team-cell">${t1.flag} ${t1.name}</div></td>
         ${scoreCell}
