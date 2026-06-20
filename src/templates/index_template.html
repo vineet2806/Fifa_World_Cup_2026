@@ -509,8 +509,8 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
     <div id="scheduleTableWrap" class="schedule-table-wrap card card-sm" style="padding:0">
       <table class="schedule-table" role="table" aria-label="Match schedule">
         <thead><tr>
-          <th>Date (UTC)</th>
-          <th>IST Time</th>
+          <th>Date (IST)</th>
+          <th>Time IST</th>
           <th>Team 1</th>
           <th style="text-align:center">Score</th>
           <th>Team 2</th>
@@ -718,7 +718,7 @@ let favTeam = localStorage.getItem('wc2026_fav') || '';
 function recomputeMatchStatuses(){
   const now = Date.now();
   (D.matches||[]).forEach(m => {
-    if(!m.date || !m.timeUTC) return;
+    if(!m.dateUTC || !m.timeUTC) return;
     const dt = getMatchDT(m);
     if(!dt) return;
     const kickoff = dt.getTime();
@@ -746,7 +746,7 @@ setInterval(function(){ recomputeMatchStatuses(); if(typeof renderToday==='funct
 // Enrich every match with IST and local-display fields
 function enrichMatchTimes(){
   (D.matches||[]).forEach(m => {
-    if(!m.date || !m.timeUTC) return;
+    if(!m.dateUTC || !m.timeUTC) return;
     const [h, min] = (m.timeUTC||'').split(':').map(Number);
     if(isNaN(h)) return;
     // timeUTC is already in UTC; compute IST (UTC+5:30)
@@ -754,6 +754,10 @@ function enrichMatchTimes(){
     const istMins = (utcMins + 330) % 1440;
     const istH = Math.floor(istMins/60), istM = istMins%60;
     m.timeIST = pad(istH) + ':' + pad(istM);
+    // IST date may be the day after the UTC date
+    const istBase = new Date((m.dateUTC || m.date) + 'T00:00:00Z');
+    if(utcMins + 330 >= 1440) istBase.setUTCDate(istBase.getUTCDate() + 1);
+    m.dateIST = istBase.toISOString().slice(0,10);
     // Compute local date/time at host venue for display
     const offsetStr = m.timeOffset || 'UTC+0';
     const sign = offsetStr.includes('-') ? -1 : 1;
@@ -765,7 +769,7 @@ function enrichMatchTimes(){
     const rawLocalMins = utcMins + sign*offsetH*60;
     if(rawLocalMins < 0) localDayOffset = -1;
     else if(rawLocalMins >= 1440) localDayOffset = 1;
-    const base = new Date(m.date + 'T00:00:00Z');
+    const base = new Date((m.dateUTC || m.date) + 'T00:00:00Z');
     base.setUTCDate(base.getUTCDate() + localDayOffset);
     m.localDate = base.toISOString().slice(0,10);
     m.timeLocalDisplay = pad(locH) + ':' + pad(locM);
@@ -780,22 +784,23 @@ function venue(id){ return VENUES_MAP[id] || {name:id||'TBD', city:''} }
 function pad(n){ return String(n).padStart(2,'0') }
 
 function formatDateIST(dateStr, timeIST){
-  if(!dateStr) return '';
-  const d = new Date(dateStr + 'T00:00:00+05:30');
-  return d.toLocaleDateString('en-IN', {timeZone:'Asia/Kolkata', weekday:'short', month:'short', day:'numeric'}) + (timeIST ? ' · ' + timeIST + ' IST' : '');
+  if(!dateStr || !timeIST) return '';
+  const [h,min] = timeIST.split(':').map(Number);
+  const d = new Date(dateStr + 'T' + pad(h) + ':' + pad(min||0) + ':00+05:30');
+  return d.toLocaleDateString('en-IN', {timeZone:'Asia/Kolkata', weekday:'short', month:'short', day:'numeric'});
 }
 
 function todayIST(){
   return new Date().toLocaleDateString('en-CA', {timeZone:'Asia/Kolkata'});
 }
 
-function isToday(dateStr){ return dateStr === todayIST() }
+function isToday(istDateStr){ return istDateStr === todayIST() }
 
 function getMatchDT(m){
-  if(!m.date || !m.timeUTC) return null;
+  if(!m.dateUTC || !m.timeUTC) return null;
   try {
     const [h,min] = (m.timeUTC||'22:00').split(':').map(Number);
-    const d = new Date(m.date + 'T' + pad(h) + ':' + pad(min||0) + ':00Z');
+    const d = new Date(m.dateUTC + 'T' + pad(h) + ':' + pad(min||0) + ':00Z');
     return isNaN(d) ? null : d;
   } catch(e){ return null }
 }
@@ -991,7 +996,7 @@ function matchCardHTML(m, size){
     <div class="match-footer">
       <div class="match-venue">🏟️ ${v.name}, ${v.city}</div>
       <div>
-        <div class="match-time-ist">${m.date||''}</div>
+        <div class="match-time-ist">${m.dateIST||m.date||''} · ${m.timeIST||''} IST</div>
         ${localT}
       </div>
       ${m.status==='UPCOMING'?`<button class="ics-btn" onclick="generateICS(${JSON.stringify(m).replace(/"/g,'&quot;')})" title="Add to Calendar">📅 Cal</button>`:''}
@@ -1003,7 +1008,7 @@ function matchCardHTML(m, size){
 function renderToday(){
   const today = todayIST();
   document.getElementById('todayDate').textContent = '— ' + new Date(today+'T12:00:00').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
-  const todayMs = (D.matches||[]).filter(m => m.date===today);
+  const todayMs = (D.matches||[]).filter(m => (m.dateIST || m.date)===today);
   const el = document.getElementById('todayMatches');
   const empty = document.getElementById('todayEmpty');
   if(!todayMs.length){ el.classList.add('hidden'); empty.classList.remove('hidden'); return; }
@@ -1063,11 +1068,12 @@ function renderSchedule(){
       const scoreCell = m.status==='FT'||m.status==='LIVE'||m.status==='HT'
         ? `<td class="score-cell">${m.score1??0} – ${m.score2??0}</td>`
         : `<td class="score-cell" style="color:var(--text-d)">vs</td>`;
+      const istDate = formatDateIST(m.dateUTC, m.timeIST);
       const localTimeLabel = m.timeLocalDisplay
         ? `<span style="color:var(--text-d);font-size:.68rem;display:block;margin-top:2px">${m.localDate||m.date} · ${m.timeLocalDisplay} ${m.timeOffset||''}</span>`
         : '';
       return `<tr>
-        <td style="white-space:nowrap;font-size:.78rem">${m.date||''}${localTimeLabel}</td>
+        <td style="white-space:nowrap;font-size:.78rem">${istDate||m.date||''}${localTimeLabel}</td>
         <td style="font-size:.78rem;white-space:nowrap">${m.timeIST||'—'} IST</td>
         <td><div class="team-cell">${t1.flag} ${t1.name}</div></td>
         ${scoreCell}
@@ -1165,7 +1171,7 @@ function renderStandingsTable(){
           <div style="font-weight:800;font-size:.9rem">${m.status!=='UPCOMING'?(m.score1??0)+' – '+(m.score2??0):statusBadge(m.status)}</div>
           <div style="display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600">${team(m.team2).name} ${team(m.team2).flag}</div>
         </div>
-        <div style="font-size:.68rem;color:var(--text-m);margin-top:4px">${m.date||''} · MD${m.matchday||''}</div>
+        <div style="font-size:.68rem;color:var(--text-m);margin-top:4px">${m.dateIST||m.date||''} · MD${m.matchday||''}</div>
       </div>`).join('')
     }</div>
   </div>`;
@@ -1513,7 +1519,7 @@ function initShareCard(){
     const t1=team(m.team1), t2=team(m.team2);
     const o=document.createElement('option');
     o.value=m.id;
-    o.textContent=`${t1.flag}${t1.name} vs ${t2.flag}${t2.name} (${m.date||''})`;
+    o.textContent=`${t1.flag}${t1.name} vs ${t2.flag}${t2.name} (${m.dateIST||m.date||''})`;
     sel.appendChild(o);
   });
 }
@@ -1529,7 +1535,7 @@ window.generateShareCard = function(){
       <div class="share-card-title">⚽ FIFA World Cup 2026</div>
       <div class="share-card-teams">${t1.flag} ${t2.flag}</div>
       <div class="share-card-score">${t1.name} ${scoreText} ${t2.name}</div>
-      <div class="share-card-meta">Group ${m.group||''} · ${m.date||''} · ${venue(m.venue).name}</div>
+      <div class="share-card-meta">Group ${m.group||''} · ${m.dateIST||m.date||''} · ${venue(m.venue).name}</div>
       <div class="share-card-badge">🏆 WC2026 Fan Dashboard</div>
     </div>
     <p style="font-size:.7rem;color:var(--text-m);text-align:center;margin-top:8px">Screenshot to share on social media</p>`;

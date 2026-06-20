@@ -815,7 +815,7 @@
       "group": "A",
       "matchday": 1,
       "date": "2026-06-11",
-      "timeUTC": "07:00",
+      "timeUTC": "19:00",
       "team1": "MEX",
       "team2": "RSA",
       "score1": null,
@@ -824,14 +824,15 @@
       "venue": "v14",
       "city": "Mexico City",
       "timeOffset": "UTC-6",
-      "timeLocal": "13:00"
+      "timeLocal": "13:00",
+      "dateUTC": "2026-06-11"
     },
     {
       "id": "m002",
       "group": "A",
       "matchday": 1,
       "date": "2026-06-11",
-      "timeUTC": "14:00",
+      "timeUTC": "02:00",
       "team1": "KOR",
       "team2": "CZE",
       "score1": null,
@@ -840,14 +841,15 @@
       "venue": "v15",
       "city": "Guadalajara",
       "timeOffset": "UTC-6",
-      "timeLocal": "20:00"
+      "timeLocal": "20:00",
+      "dateUTC": "2026-06-12"
     },
     {
       "id": "m003",
       "group": "A",
       "matchday": 8,
       "date": "2026-06-18",
-      "timeUTC": "08:00",
+      "timeUTC": "16:00",
       "team1": "CZE",
       "team2": "RSA",
       "score1": null,
@@ -856,14 +858,15 @@
       "venue": "v05",
       "city": "Atlanta",
       "timeOffset": "UTC-4",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-18"
     },
     {
       "id": "m004",
       "group": "A",
       "matchday": 8,
       "date": "2026-06-18",
-      "timeUTC": "13:00",
+      "timeUTC": "01:00",
       "team1": "MEX",
       "team2": "KOR",
       "score1": null,
@@ -872,14 +875,15 @@
       "venue": "v15",
       "city": "Guadalajara",
       "timeOffset": "UTC-6",
-      "timeLocal": "19:00"
+      "timeLocal": "19:00",
+      "dateUTC": "2026-06-19"
     },
     {
       "id": "m005",
       "group": "A",
       "matchday": 14,
       "date": "2026-06-24",
-      "timeUTC": "13:00",
+      "timeUTC": "01:00",
       "team1": "CZE",
       "team2": "MEX",
       "score1": null,
@@ -888,14 +892,15 @@
       "venue": "v14",
       "city": "Mexico City",
       "timeOffset": "UTC-6",
-      "timeLocal": "19:00"
+      "timeLocal": "19:00",
+      "dateUTC": "2026-06-25"
     },
     {
       "id": "m006",
       "group": "A",
       "matchday": 14,
       "date": "2026-06-24",
-      "timeUTC": "13:00",
+      "timeUTC": "01:00",
       "team1": "RSA",
       "team2": "KOR",
       "score1": null,
@@ -904,14 +909,15 @@
       "venue": "v16",
       "city": "Monterrey",
       "timeOffset": "UTC-6",
-      "timeLocal": "19:00"
+      "timeLocal": "19:00",
+      "dateUTC": "2026-06-25"
     },
     {
       "id": "m007",
       "group": "B",
       "matchday": 2,
       "date": "2026-06-12",
-      "timeUTC": "11:00",
+      "timeUTC": "19:00",
       "team1": "CAN",
       "team2": "BIH",
       "score1": null,
@@ -920,14 +926,15 @@
       "venue": "v13",
       "city": "Toronto",
       "timeOffset": "UTC-4",
-      "timeLocal": "15:00"
+      "timeLocal": "15:00",
+      "dateUTC": "2026-06-12"
     },
     {
       "id": "m008",
       "group": "B",
       "matchday": 3,
       "date": "2026-06-13",
-      "timeUTC": "05:00",
+      "timeUTC": "19:00",
       "team1": "QAT",
       "team2": "SUI",
       "score1": null,
@@ -936,14 +943,15 @@
       "venue": "v08",
       "city": "Santa Clara",
       "timeOffset": "UTC-7",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-13"
     },
     {
       "id": "m009",
       "group": "B",
       "matchday": 8,
       "date": "2026-06-18",
-      "timeUTC": "05:00",
+      "timeUTC": "19:00",
       "team1": "SUI",
       "team2": "BIH",
       "score1": null,
@@ -952,14 +960,15 @@
       "venue": "v03",
       "city": "Inglewood",
       "timeOffset": "UTC-7",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-18"
     },
     {
       "id": "m010",
       "group": "B",
       "matchday": 8,
       "date": "2026-06-18",
-      "timeUTC": "08:00",
+      "timeUTC": "22:00",
       "team1": "CAN",
       "team2": "QAT",
       "score1": null,
@@ -968,14 +977,15 @@
       "venue": "v12",
       "city": "Vancouver",
       "timeOffset": "UTC-7",
-      "timeLocal": "15:00"
+      "timeLocal": "15:00",
+      "dateUTC": "2026-06-18"
     },
     {
       "id": "m011",
       "group": "B",
       "matchday": 14,
       "date": "2026-06-24",
-      "timeUTC": "05:00",
+      "timeUTC": "19:00",
       "team1": "SUI",
       "team2": "CAN",
       "score1": null,
@@ -984,14 +994,15 @@
       "venue": "v12",
       "city": "Vancouver",
       "timeOffset": "UTC-7",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-24"
     },
     {
       "id": "m012",
       "group": "B",
       "matchday": 14,
       "date": "2026-06-24",
-      "timeUTC": "05:00",
+      "timeUTC": "19:00",
       "team1": "BIH",
       "team2": "QAT",
       "score1": null,
@@ -1000,14 +1011,15 @@
       "venue": "v09",
       "city": "Seattle",
       "timeOffset": "UTC-7",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-24"
     },
     {
       "id": "m013",
       "group": "C",
       "matchday": 3,
       "date": "2026-06-13",
-      "timeUTC": "14:00",
+      "timeUTC": "22:00",
       "team1": "BRA",
       "team2": "MAR",
       "score1": null,
@@ -1016,14 +1028,15 @@
       "venue": "v01",
       "city": "East Rutherford",
       "timeOffset": "UTC-4",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-13"
     },
     {
       "id": "m014",
       "group": "C",
       "matchday": 3,
       "date": "2026-06-13",
-      "timeUTC": "17:00",
+      "timeUTC": "01:00",
       "team1": "HAI",
       "team2": "SCO",
       "score1": null,
@@ -1032,14 +1045,15 @@
       "venue": "v11",
       "city": "Foxborough",
       "timeOffset": "UTC-4",
-      "timeLocal": "21:00"
+      "timeLocal": "21:00",
+      "dateUTC": "2026-06-14"
     },
     {
       "id": "m015",
       "group": "C",
       "matchday": 9,
       "date": "2026-06-19",
-      "timeUTC": "14:00",
+      "timeUTC": "22:00",
       "team1": "SCO",
       "team2": "MAR",
       "score1": null,
@@ -1048,14 +1062,15 @@
       "venue": "v11",
       "city": "Foxborough",
       "timeOffset": "UTC-4",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-19"
     },
     {
       "id": "m016",
       "group": "C",
       "matchday": 9,
       "date": "2026-06-19",
-      "timeUTC": "16:30",
+      "timeUTC": "00:30",
       "team1": "BRA",
       "team2": "HAI",
       "score1": null,
@@ -1064,14 +1079,15 @@
       "venue": "v10",
       "city": "Philadelphia",
       "timeOffset": "UTC-4",
-      "timeLocal": "20:30"
+      "timeLocal": "20:30",
+      "dateUTC": "2026-06-20"
     },
     {
       "id": "m017",
       "group": "C",
       "matchday": 14,
       "date": "2026-06-24",
-      "timeUTC": "14:00",
+      "timeUTC": "22:00",
       "team1": "SCO",
       "team2": "BRA",
       "score1": null,
@@ -1080,14 +1096,15 @@
       "venue": "v04",
       "city": "Miami Gardens",
       "timeOffset": "UTC-4",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-24"
     },
     {
       "id": "m018",
       "group": "C",
       "matchday": 14,
       "date": "2026-06-24",
-      "timeUTC": "14:00",
+      "timeUTC": "22:00",
       "team1": "MAR",
       "team2": "HAI",
       "score1": null,
@@ -1096,14 +1113,15 @@
       "venue": "v05",
       "city": "Atlanta",
       "timeOffset": "UTC-4",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-24"
     },
     {
       "id": "m019",
       "group": "D",
       "matchday": 2,
       "date": "2026-06-12",
-      "timeUTC": "11:00",
+      "timeUTC": "01:00",
       "team1": "USA",
       "team2": "PAR",
       "score1": null,
@@ -1112,14 +1130,15 @@
       "venue": "v03",
       "city": "Inglewood",
       "timeOffset": "UTC-7",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-13"
     },
     {
       "id": "m020",
       "group": "D",
       "matchday": 3,
       "date": "2026-06-13",
-      "timeUTC": "14:00",
+      "timeUTC": "04:00",
       "team1": "AUS",
       "team2": "TUR",
       "score1": null,
@@ -1128,14 +1147,15 @@
       "venue": "v12",
       "city": "Vancouver",
       "timeOffset": "UTC-7",
-      "timeLocal": "21:00"
+      "timeLocal": "21:00",
+      "dateUTC": "2026-06-14"
     },
     {
       "id": "m021",
       "group": "D",
       "matchday": 9,
       "date": "2026-06-19",
-      "timeUTC": "05:00",
+      "timeUTC": "19:00",
       "team1": "USA",
       "team2": "AUS",
       "score1": null,
@@ -1144,14 +1164,15 @@
       "venue": "v09",
       "city": "Seattle",
       "timeOffset": "UTC-7",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-19"
     },
     {
       "id": "m022",
       "group": "D",
       "matchday": 9,
       "date": "2026-06-19",
-      "timeUTC": "13:00",
+      "timeUTC": "03:00",
       "team1": "TUR",
       "team2": "PAR",
       "score1": null,
@@ -1160,14 +1181,15 @@
       "venue": "v08",
       "city": "Santa Clara",
       "timeOffset": "UTC-7",
-      "timeLocal": "20:00"
+      "timeLocal": "20:00",
+      "dateUTC": "2026-06-20"
     },
     {
       "id": "m023",
       "group": "D",
       "matchday": 15,
       "date": "2026-06-25",
-      "timeUTC": "12:00",
+      "timeUTC": "02:00",
       "team1": "TUR",
       "team2": "USA",
       "score1": null,
@@ -1176,14 +1198,15 @@
       "venue": "v03",
       "city": "Inglewood",
       "timeOffset": "UTC-7",
-      "timeLocal": "19:00"
+      "timeLocal": "19:00",
+      "dateUTC": "2026-06-26"
     },
     {
       "id": "m024",
       "group": "D",
       "matchday": 15,
       "date": "2026-06-25",
-      "timeUTC": "12:00",
+      "timeUTC": "02:00",
       "team1": "PAR",
       "team2": "AUS",
       "score1": null,
@@ -1192,14 +1215,15 @@
       "venue": "v08",
       "city": "Santa Clara",
       "timeOffset": "UTC-7",
-      "timeLocal": "19:00"
+      "timeLocal": "19:00",
+      "dateUTC": "2026-06-26"
     },
     {
       "id": "m025",
       "group": "E",
       "matchday": 4,
       "date": "2026-06-14",
-      "timeUTC": "07:00",
+      "timeUTC": "17:00",
       "team1": "GER",
       "team2": "CUW",
       "score1": null,
@@ -1208,14 +1232,15 @@
       "venue": "v07",
       "city": "Houston",
       "timeOffset": "UTC-5",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-14"
     },
     {
       "id": "m026",
       "group": "E",
       "matchday": 4,
       "date": "2026-06-14",
-      "timeUTC": "15:00",
+      "timeUTC": "23:00",
       "team1": "CIV",
       "team2": "ECU",
       "score1": null,
@@ -1224,14 +1249,15 @@
       "venue": "v10",
       "city": "Philadelphia",
       "timeOffset": "UTC-4",
-      "timeLocal": "19:00"
+      "timeLocal": "19:00",
+      "dateUTC": "2026-06-14"
     },
     {
       "id": "m027",
       "group": "E",
       "matchday": 10,
       "date": "2026-06-20",
-      "timeUTC": "12:00",
+      "timeUTC": "20:00",
       "team1": "GER",
       "team2": "CIV",
       "score1": null,
@@ -1240,14 +1266,15 @@
       "venue": "v13",
       "city": "Toronto",
       "timeOffset": "UTC-4",
-      "timeLocal": "16:00"
+      "timeLocal": "16:00",
+      "dateUTC": "2026-06-20"
     },
     {
       "id": "m028",
       "group": "E",
       "matchday": 10,
       "date": "2026-06-20",
-      "timeUTC": "14:00",
+      "timeUTC": "00:00",
       "team1": "ECU",
       "team2": "CUW",
       "score1": null,
@@ -1256,14 +1283,15 @@
       "venue": "v06",
       "city": "Kansas City",
       "timeOffset": "UTC-5",
-      "timeLocal": "19:00"
+      "timeLocal": "19:00",
+      "dateUTC": "2026-06-21"
     },
     {
       "id": "m029",
       "group": "E",
       "matchday": 15,
       "date": "2026-06-25",
-      "timeUTC": "12:00",
+      "timeUTC": "20:00",
       "team1": "CUW",
       "team2": "CIV",
       "score1": null,
@@ -1272,14 +1300,15 @@
       "venue": "v10",
       "city": "Philadelphia",
       "timeOffset": "UTC-4",
-      "timeLocal": "16:00"
+      "timeLocal": "16:00",
+      "dateUTC": "2026-06-25"
     },
     {
       "id": "m030",
       "group": "E",
       "matchday": 15,
       "date": "2026-06-25",
-      "timeUTC": "12:00",
+      "timeUTC": "20:00",
       "team1": "ECU",
       "team2": "GER",
       "score1": null,
@@ -1288,14 +1317,15 @@
       "venue": "v01",
       "city": "East Rutherford",
       "timeOffset": "UTC-4",
-      "timeLocal": "16:00"
+      "timeLocal": "16:00",
+      "dateUTC": "2026-06-25"
     },
     {
       "id": "m031",
       "group": "F",
       "matchday": 4,
       "date": "2026-06-14",
-      "timeUTC": "10:00",
+      "timeUTC": "20:00",
       "team1": "NED",
       "team2": "JPN",
       "score1": null,
@@ -1304,14 +1334,15 @@
       "venue": "v02",
       "city": "Arlington",
       "timeOffset": "UTC-5",
-      "timeLocal": "15:00"
+      "timeLocal": "15:00",
+      "dateUTC": "2026-06-14"
     },
     {
       "id": "m032",
       "group": "F",
       "matchday": 4,
       "date": "2026-06-14",
-      "timeUTC": "14:00",
+      "timeUTC": "02:00",
       "team1": "SWE",
       "team2": "TUN",
       "score1": null,
@@ -1320,14 +1351,15 @@
       "venue": "v16",
       "city": "Monterrey",
       "timeOffset": "UTC-6",
-      "timeLocal": "20:00"
+      "timeLocal": "20:00",
+      "dateUTC": "2026-06-15"
     },
     {
       "id": "m033",
       "group": "F",
       "matchday": 10,
       "date": "2026-06-20",
-      "timeUTC": "07:00",
+      "timeUTC": "17:00",
       "team1": "NED",
       "team2": "SWE",
       "score1": null,
@@ -1336,14 +1368,15 @@
       "venue": "v07",
       "city": "Houston",
       "timeOffset": "UTC-5",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-20"
     },
     {
       "id": "m034",
       "group": "F",
       "matchday": 10,
       "date": "2026-06-20",
-      "timeUTC": "16:00",
+      "timeUTC": "04:00",
       "team1": "TUN",
       "team2": "JPN",
       "score1": null,
@@ -1352,14 +1385,15 @@
       "venue": "v16",
       "city": "Monterrey",
       "timeOffset": "UTC-6",
-      "timeLocal": "22:00"
+      "timeLocal": "22:00",
+      "dateUTC": "2026-06-21"
     },
     {
       "id": "m035",
       "group": "F",
       "matchday": 15,
       "date": "2026-06-25",
-      "timeUTC": "13:00",
+      "timeUTC": "23:00",
       "team1": "JPN",
       "team2": "SWE",
       "score1": null,
@@ -1368,14 +1402,15 @@
       "venue": "v02",
       "city": "Arlington",
       "timeOffset": "UTC-5",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-25"
     },
     {
       "id": "m036",
       "group": "F",
       "matchday": 15,
       "date": "2026-06-25",
-      "timeUTC": "13:00",
+      "timeUTC": "23:00",
       "team1": "TUN",
       "team2": "NED",
       "score1": null,
@@ -1384,14 +1419,15 @@
       "venue": "v06",
       "city": "Kansas City",
       "timeOffset": "UTC-5",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-25"
     },
     {
       "id": "m037",
       "group": "G",
       "matchday": 5,
       "date": "2026-06-15",
-      "timeUTC": "05:00",
+      "timeUTC": "19:00",
       "team1": "BEL",
       "team2": "EGY",
       "score1": null,
@@ -1400,14 +1436,15 @@
       "venue": "v09",
       "city": "Seattle",
       "timeOffset": "UTC-7",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-15"
     },
     {
       "id": "m038",
       "group": "G",
       "matchday": 5,
       "date": "2026-06-15",
-      "timeUTC": "11:00",
+      "timeUTC": "01:00",
       "team1": "IRN",
       "team2": "NZL",
       "score1": null,
@@ -1416,14 +1453,15 @@
       "venue": "v03",
       "city": "Inglewood",
       "timeOffset": "UTC-7",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-16"
     },
     {
       "id": "m039",
       "group": "G",
       "matchday": 11,
       "date": "2026-06-21",
-      "timeUTC": "05:00",
+      "timeUTC": "19:00",
       "team1": "BEL",
       "team2": "IRN",
       "score1": null,
@@ -1432,14 +1470,15 @@
       "venue": "v03",
       "city": "Inglewood",
       "timeOffset": "UTC-7",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-21"
     },
     {
       "id": "m040",
       "group": "G",
       "matchday": 11,
       "date": "2026-06-21",
-      "timeUTC": "11:00",
+      "timeUTC": "01:00",
       "team1": "NZL",
       "team2": "EGY",
       "score1": null,
@@ -1448,14 +1487,15 @@
       "venue": "v12",
       "city": "Vancouver",
       "timeOffset": "UTC-7",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-22"
     },
     {
       "id": "m041",
       "group": "G",
       "matchday": 16,
       "date": "2026-06-26",
-      "timeUTC": "13:00",
+      "timeUTC": "03:00",
       "team1": "EGY",
       "team2": "IRN",
       "score1": null,
@@ -1464,14 +1504,15 @@
       "venue": "v09",
       "city": "Seattle",
       "timeOffset": "UTC-7",
-      "timeLocal": "20:00"
+      "timeLocal": "20:00",
+      "dateUTC": "2026-06-27"
     },
     {
       "id": "m042",
       "group": "G",
       "matchday": 16,
       "date": "2026-06-26",
-      "timeUTC": "13:00",
+      "timeUTC": "03:00",
       "team1": "NZL",
       "team2": "BEL",
       "score1": null,
@@ -1480,14 +1521,15 @@
       "venue": "v12",
       "city": "Vancouver",
       "timeOffset": "UTC-7",
-      "timeLocal": "20:00"
+      "timeLocal": "20:00",
+      "dateUTC": "2026-06-27"
     },
     {
       "id": "m043",
       "group": "H",
       "matchday": 5,
       "date": "2026-06-15",
-      "timeUTC": "08:00",
+      "timeUTC": "16:00",
       "team1": "ESP",
       "team2": "CPV",
       "score1": null,
@@ -1496,14 +1538,15 @@
       "venue": "v05",
       "city": "Atlanta",
       "timeOffset": "UTC-4",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-15"
     },
     {
       "id": "m044",
       "group": "H",
       "matchday": 5,
       "date": "2026-06-15",
-      "timeUTC": "14:00",
+      "timeUTC": "22:00",
       "team1": "KSA",
       "team2": "URU",
       "score1": null,
@@ -1512,14 +1555,15 @@
       "venue": "v04",
       "city": "Miami Gardens",
       "timeOffset": "UTC-4",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-15"
     },
     {
       "id": "m045",
       "group": "H",
       "matchday": 11,
       "date": "2026-06-21",
-      "timeUTC": "08:00",
+      "timeUTC": "16:00",
       "team1": "ESP",
       "team2": "KSA",
       "score1": null,
@@ -1528,14 +1572,15 @@
       "venue": "v05",
       "city": "Atlanta",
       "timeOffset": "UTC-4",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-21"
     },
     {
       "id": "m046",
       "group": "H",
       "matchday": 11,
       "date": "2026-06-21",
-      "timeUTC": "14:00",
+      "timeUTC": "22:00",
       "team1": "URU",
       "team2": "CPV",
       "score1": null,
@@ -1544,14 +1589,15 @@
       "venue": "v04",
       "city": "Miami Gardens",
       "timeOffset": "UTC-4",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-21"
     },
     {
       "id": "m047",
       "group": "H",
       "matchday": 16,
       "date": "2026-06-26",
-      "timeUTC": "14:00",
+      "timeUTC": "00:00",
       "team1": "CPV",
       "team2": "KSA",
       "score1": null,
@@ -1560,14 +1606,15 @@
       "venue": "v07",
       "city": "Houston",
       "timeOffset": "UTC-5",
-      "timeLocal": "19:00"
+      "timeLocal": "19:00",
+      "dateUTC": "2026-06-27"
     },
     {
       "id": "m048",
       "group": "H",
       "matchday": 16,
       "date": "2026-06-26",
-      "timeUTC": "12:00",
+      "timeUTC": "00:00",
       "team1": "URU",
       "team2": "ESP",
       "score1": null,
@@ -1576,14 +1623,15 @@
       "venue": "v15",
       "city": "Guadalajara",
       "timeOffset": "UTC-6",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-27"
     },
     {
       "id": "m049",
       "group": "I",
       "matchday": 6,
       "date": "2026-06-16",
-      "timeUTC": "11:00",
+      "timeUTC": "19:00",
       "team1": "FRA",
       "team2": "SEN",
       "score1": null,
@@ -1592,14 +1640,15 @@
       "venue": "v01",
       "city": "East Rutherford",
       "timeOffset": "UTC-4",
-      "timeLocal": "15:00"
+      "timeLocal": "15:00",
+      "dateUTC": "2026-06-16"
     },
     {
       "id": "m050",
       "group": "I",
       "matchday": 6,
       "date": "2026-06-16",
-      "timeUTC": "14:00",
+      "timeUTC": "22:00",
       "team1": "IRQ",
       "team2": "NOR",
       "score1": null,
@@ -1608,14 +1657,15 @@
       "venue": "v11",
       "city": "Foxborough",
       "timeOffset": "UTC-4",
-      "timeLocal": "18:00"
+      "timeLocal": "18:00",
+      "dateUTC": "2026-06-16"
     },
     {
       "id": "m051",
       "group": "I",
       "matchday": 12,
       "date": "2026-06-22",
-      "timeUTC": "13:00",
+      "timeUTC": "21:00",
       "team1": "FRA",
       "team2": "IRQ",
       "score1": null,
@@ -1624,14 +1674,15 @@
       "venue": "v10",
       "city": "Philadelphia",
       "timeOffset": "UTC-4",
-      "timeLocal": "17:00"
+      "timeLocal": "17:00",
+      "dateUTC": "2026-06-22"
     },
     {
       "id": "m052",
       "group": "I",
       "matchday": 12,
       "date": "2026-06-22",
-      "timeUTC": "16:00",
+      "timeUTC": "00:00",
       "team1": "NOR",
       "team2": "SEN",
       "score1": null,
@@ -1640,14 +1691,15 @@
       "venue": "v01",
       "city": "East Rutherford",
       "timeOffset": "UTC-4",
-      "timeLocal": "20:00"
+      "timeLocal": "20:00",
+      "dateUTC": "2026-06-23"
     },
     {
       "id": "m053",
       "group": "I",
       "matchday": 16,
       "date": "2026-06-26",
-      "timeUTC": "11:00",
+      "timeUTC": "19:00",
       "team1": "NOR",
       "team2": "FRA",
       "score1": null,
@@ -1656,14 +1708,15 @@
       "venue": "v11",
       "city": "Foxborough",
       "timeOffset": "UTC-4",
-      "timeLocal": "15:00"
+      "timeLocal": "15:00",
+      "dateUTC": "2026-06-26"
     },
     {
       "id": "m054",
       "group": "I",
       "matchday": 16,
       "date": "2026-06-26",
-      "timeUTC": "11:00",
+      "timeUTC": "19:00",
       "team1": "SEN",
       "team2": "IRQ",
       "score1": null,
@@ -1672,14 +1725,15 @@
       "venue": "v13",
       "city": "Toronto",
       "timeOffset": "UTC-4",
-      "timeLocal": "15:00"
+      "timeLocal": "15:00",
+      "dateUTC": "2026-06-26"
     },
     {
       "id": "m055",
       "group": "J",
       "matchday": 6,
       "date": "2026-06-16",
-      "timeUTC": "15:00",
+      "timeUTC": "01:00",
       "team1": "ARG",
       "team2": "ALG",
       "score1": null,
@@ -1688,14 +1742,15 @@
       "venue": "v06",
       "city": "Kansas City",
       "timeOffset": "UTC-5",
-      "timeLocal": "20:00"
+      "timeLocal": "20:00",
+      "dateUTC": "2026-06-17"
     },
     {
       "id": "m056",
       "group": "J",
       "matchday": 6,
       "date": "2026-06-16",
-      "timeUTC": "14:00",
+      "timeUTC": "04:00",
       "team1": "AUT",
       "team2": "JOR",
       "score1": null,
@@ -1704,14 +1759,15 @@
       "venue": "v08",
       "city": "Santa Clara",
       "timeOffset": "UTC-7",
-      "timeLocal": "21:00"
+      "timeLocal": "21:00",
+      "dateUTC": "2026-06-17"
     },
     {
       "id": "m057",
       "group": "J",
       "matchday": 12,
       "date": "2026-06-22",
-      "timeUTC": "07:00",
+      "timeUTC": "17:00",
       "team1": "ARG",
       "team2": "AUT",
       "score1": null,
@@ -1720,14 +1776,15 @@
       "venue": "v02",
       "city": "Arlington",
       "timeOffset": "UTC-5",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-22"
     },
     {
       "id": "m058",
       "group": "J",
       "matchday": 12,
       "date": "2026-06-22",
-      "timeUTC": "13:00",
+      "timeUTC": "03:00",
       "team1": "JOR",
       "team2": "ALG",
       "score1": null,
@@ -1736,14 +1793,15 @@
       "venue": "v08",
       "city": "Santa Clara",
       "timeOffset": "UTC-7",
-      "timeLocal": "20:00"
+      "timeLocal": "20:00",
+      "dateUTC": "2026-06-23"
     },
     {
       "id": "m059",
       "group": "J",
       "matchday": 17,
       "date": "2026-06-27",
-      "timeUTC": "16:00",
+      "timeUTC": "02:00",
       "team1": "ALG",
       "team2": "AUT",
       "score1": null,
@@ -1752,14 +1810,15 @@
       "venue": "v06",
       "city": "Kansas City",
       "timeOffset": "UTC-5",
-      "timeLocal": "21:00"
+      "timeLocal": "21:00",
+      "dateUTC": "2026-06-28"
     },
     {
       "id": "m060",
       "group": "J",
       "matchday": 17,
       "date": "2026-06-27",
-      "timeUTC": "16:00",
+      "timeUTC": "02:00",
       "team1": "JOR",
       "team2": "ARG",
       "score1": null,
@@ -1768,14 +1827,15 @@
       "venue": "v02",
       "city": "Arlington",
       "timeOffset": "UTC-5",
-      "timeLocal": "21:00"
+      "timeLocal": "21:00",
+      "dateUTC": "2026-06-28"
     },
     {
       "id": "m061",
       "group": "K",
       "matchday": 7,
       "date": "2026-06-17",
-      "timeUTC": "07:00",
+      "timeUTC": "17:00",
       "team1": "POR",
       "team2": "COD",
       "score1": null,
@@ -1784,14 +1844,15 @@
       "venue": "v07",
       "city": "Houston",
       "timeOffset": "UTC-5",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-17"
     },
     {
       "id": "m062",
       "group": "K",
       "matchday": 7,
       "date": "2026-06-17",
-      "timeUTC": "14:00",
+      "timeUTC": "02:00",
       "team1": "UZB",
       "team2": "COL",
       "score1": null,
@@ -1800,14 +1861,15 @@
       "venue": "v14",
       "city": "Mexico City",
       "timeOffset": "UTC-6",
-      "timeLocal": "20:00"
+      "timeLocal": "20:00",
+      "dateUTC": "2026-06-18"
     },
     {
       "id": "m063",
       "group": "K",
       "matchday": 13,
       "date": "2026-06-23",
-      "timeUTC": "07:00",
+      "timeUTC": "17:00",
       "team1": "POR",
       "team2": "UZB",
       "score1": null,
@@ -1816,14 +1878,15 @@
       "venue": "v07",
       "city": "Houston",
       "timeOffset": "UTC-5",
-      "timeLocal": "12:00"
+      "timeLocal": "12:00",
+      "dateUTC": "2026-06-23"
     },
     {
       "id": "m064",
       "group": "K",
       "matchday": 13,
       "date": "2026-06-23",
-      "timeUTC": "14:00",
+      "timeUTC": "02:00",
       "team1": "COL",
       "team2": "COD",
       "score1": null,
@@ -1832,14 +1895,15 @@
       "venue": "v15",
       "city": "Guadalajara",
       "timeOffset": "UTC-6",
-      "timeLocal": "20:00"
+      "timeLocal": "20:00",
+      "dateUTC": "2026-06-24"
     },
     {
       "id": "m065",
       "group": "K",
       "matchday": 17,
       "date": "2026-06-27",
-      "timeUTC": "15:30",
+      "timeUTC": "23:30",
       "team1": "COL",
       "team2": "POR",
       "score1": null,
@@ -1848,14 +1912,15 @@
       "venue": "v04",
       "city": "Miami Gardens",
       "timeOffset": "UTC-4",
-      "timeLocal": "19:30"
+      "timeLocal": "19:30",
+      "dateUTC": "2026-06-27"
     },
     {
       "id": "m066",
       "group": "K",
       "matchday": 17,
       "date": "2026-06-27",
-      "timeUTC": "15:30",
+      "timeUTC": "23:30",
       "team1": "COD",
       "team2": "UZB",
       "score1": null,
@@ -1864,14 +1929,15 @@
       "venue": "v05",
       "city": "Atlanta",
       "timeOffset": "UTC-4",
-      "timeLocal": "19:30"
+      "timeLocal": "19:30",
+      "dateUTC": "2026-06-27"
     },
     {
       "id": "m067",
       "group": "L",
       "matchday": 7,
       "date": "2026-06-17",
-      "timeUTC": "10:00",
+      "timeUTC": "20:00",
       "team1": "ENG",
       "team2": "CRO",
       "score1": null,
@@ -1880,14 +1946,15 @@
       "venue": "v02",
       "city": "Arlington",
       "timeOffset": "UTC-5",
-      "timeLocal": "15:00"
+      "timeLocal": "15:00",
+      "dateUTC": "2026-06-17"
     },
     {
       "id": "m068",
       "group": "L",
       "matchday": 7,
       "date": "2026-06-17",
-      "timeUTC": "15:00",
+      "timeUTC": "23:00",
       "team1": "GHA",
       "team2": "PAN",
       "score1": null,
@@ -1896,14 +1963,15 @@
       "venue": "v13",
       "city": "Toronto",
       "timeOffset": "UTC-4",
-      "timeLocal": "19:00"
+      "timeLocal": "19:00",
+      "dateUTC": "2026-06-17"
     },
     {
       "id": "m069",
       "group": "L",
       "matchday": 13,
       "date": "2026-06-23",
-      "timeUTC": "12:00",
+      "timeUTC": "20:00",
       "team1": "ENG",
       "team2": "GHA",
       "score1": null,
@@ -1912,14 +1980,15 @@
       "venue": "v11",
       "city": "Foxborough",
       "timeOffset": "UTC-4",
-      "timeLocal": "16:00"
+      "timeLocal": "16:00",
+      "dateUTC": "2026-06-23"
     },
     {
       "id": "m070",
       "group": "L",
       "matchday": 13,
       "date": "2026-06-23",
-      "timeUTC": "15:00",
+      "timeUTC": "23:00",
       "team1": "PAN",
       "team2": "CRO",
       "score1": null,
@@ -1928,14 +1997,15 @@
       "venue": "v13",
       "city": "Toronto",
       "timeOffset": "UTC-4",
-      "timeLocal": "19:00"
+      "timeLocal": "19:00",
+      "dateUTC": "2026-06-23"
     },
     {
       "id": "m071",
       "group": "L",
       "matchday": 17,
       "date": "2026-06-27",
-      "timeUTC": "13:00",
+      "timeUTC": "21:00",
       "team1": "PAN",
       "team2": "ENG",
       "score1": null,
@@ -1944,14 +2014,15 @@
       "venue": "v01",
       "city": "East Rutherford",
       "timeOffset": "UTC-4",
-      "timeLocal": "17:00"
+      "timeLocal": "17:00",
+      "dateUTC": "2026-06-27"
     },
     {
       "id": "m072",
       "group": "L",
       "matchday": 17,
       "date": "2026-06-27",
-      "timeUTC": "13:00",
+      "timeUTC": "21:00",
       "team1": "CRO",
       "team2": "GHA",
       "score1": null,
@@ -1960,7 +2031,8 @@
       "venue": "v10",
       "city": "Philadelphia",
       "timeOffset": "UTC-4",
-      "timeLocal": "17:00"
+      "timeLocal": "17:00",
+      "dateUTC": "2026-06-27"
     }
   ],
   "standings": {
