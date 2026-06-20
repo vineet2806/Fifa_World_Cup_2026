@@ -211,6 +211,16 @@ def _parse_utc_time(time_str: str) -> str:
     return ""
 
 
+def _parse_utc_offset(time_str: str) -> str:
+    """Extract timezone offset from strings like '13:00 UTC-6' -> 'UTC-6'."""
+    if not time_str:
+        return "UTC+0"
+    parts = time_str.strip().split()
+    if len(parts) > 1 and parts[1].upper().startswith("UTC"):
+        return parts[1].upper()
+    return "UTC+0"
+
+
 def _et_to_utc(time_et: str) -> str:
     """Convert Eastern Time HH:MM to UTC HH:MM (ET = UTC-4 or UTC-5 depending on DST).
     For June World Cup dates we are in EDT (UTC-4)."""
@@ -255,6 +265,8 @@ def normalize_schedule_data(raw: dict) -> list:
                 "status": "UPCOMING",
                 "venue": m.get("venue", ""),
                 "city": m.get("city", ""),
+                "timeOffset": "UTC-4",
+                "timeLocal": m.get("time_local", ""),
             })
         except Exception:
             continue
@@ -277,6 +289,7 @@ def normalize_openfootball_data(raw: dict) -> list:
             team2 = _team_name_to_id(m.get("team2", ""))
             if not team1 or not team2:
                 continue
+            offset = _parse_utc_offset(m.get("time", ""))
             matches.append({
                 "id": hashlib.md5(f"{m.get('date','')}_{team1}_{team2}".encode()).hexdigest()[:8],
                 "group": group_letter,
@@ -290,6 +303,8 @@ def normalize_openfootball_data(raw: dict) -> list:
                 "status": "FT" if ft else "UPCOMING",
                 "venue": m.get("ground", ""),
                 "city": "",
+                "timeOffset": offset,
+                "timeLocal": "",
             })
         except Exception:
             continue
@@ -392,7 +407,7 @@ def _normalize_venue_ids(matches: list, venues: list) -> list:
 
 
 def merge_matches(fallback_matches: list, fetched_matches: list) -> list:
-    """Merge fetched match data into fallback, updating scores and status.
+    """Merge fetched match data into fallback, updating scores, status, and local time offset.
 
     Matches are keyed by (date, team1_id, team2_id) so that sources using
     full names or different IDs can still update the canonical fallback rows.
@@ -420,12 +435,18 @@ def merge_matches(fallback_matches: list, fetched_matches: list) -> list:
             rev_key = (key[0], key[2], key[1])
             fm = fetched_by_key.get(rev_key)
         if fm:
+            m = dict(m)
             # Update scores if fetched data has them
             if fm.get("score1") is not None:
-                m = dict(m)
                 m["score1"] = fm["score1"]
                 m["score2"] = fm["score2"]
                 m["status"] = fm.get("status", "FT")
+            # Overlay local timezone offset and local kickoff time from live source when available.
+            # Schedule source stores ET; openfootball stores actual local offset.
+            if fm.get("timeOffset") and fm["timeOffset"] != "UTC-4":
+                m["timeOffset"] = fm["timeOffset"]
+            if fm.get("timeLocal"):
+                m["timeLocal"] = fm["timeLocal"]
         merged.append(m)
     return merged
 
@@ -722,6 +743,14 @@ def collect_data() -> dict:
     # Ensure every match uses a canonical venue ID the frontend understands.
     matches = _normalize_venue_ids(matches, fallback.get("venues", []))
     matches = _enrich_matches_with_fallback_venues(matches, fallback.get("venues", []))
+
+    # If live sources didn't provide a local offset/time, fill from fallback metadata.
+    venue_offsets = {v["id"]: v.get("timeZone", "UTC-4") for v in fallback.get("venues", [])}
+    for m in matches:
+        if not m.get("timeOffset") and m.get("venue"):
+            m["timeOffset"] = venue_offsets.get(m["venue"], "UTC-4")
+        if not m.get("timeLocal"):
+            m["timeLocal"] = m.get("timeUTC", "")
 
     # Recompute standings from merged match results
     standings = compute_standings(matches, fallback.get("teams", []))

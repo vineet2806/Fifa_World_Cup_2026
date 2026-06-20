@@ -84,7 +84,9 @@
       "surface": "Grass",
       "opened": 2010,
       "role": "Final venue",
-      "matches": 8
+      "matches": 8,
+      "timeZone": "UTC-4",
+      "timeZoneName": "EDT"
     },
     {
       "id": "v02",
@@ -98,7 +100,9 @@
       "lon": -97.0929,
       "surface": "Grass",
       "opened": 2009,
-      "matches": 9
+      "matches": 9,
+      "timeZone": "UTC-5",
+      "timeZoneName": "CDT"
     },
     {
       "id": "v03",
@@ -112,7 +116,9 @@
       "lon": -118.3392,
       "surface": "Grass",
       "opened": 2020,
-      "matches": 6
+      "matches": 6,
+      "timeZone": "UTC-7",
+      "timeZoneName": "PDT"
     },
     {
       "id": "v04",
@@ -126,7 +132,9 @@
       "lon": -80.2389,
       "surface": "Grass",
       "opened": 1987,
-      "matches": 6
+      "matches": 6,
+      "timeZone": "UTC-4",
+      "timeZoneName": "EDT"
     },
     {
       "id": "v05",
@@ -140,7 +148,9 @@
       "lon": -84.401,
       "surface": "Grass",
       "opened": 2017,
-      "matches": 6
+      "matches": 6,
+      "timeZone": "UTC-4",
+      "timeZoneName": "EDT"
     },
     {
       "id": "v06",
@@ -154,7 +164,9 @@
       "lon": -94.4839,
       "surface": "Grass",
       "opened": 1972,
-      "matches": 6
+      "matches": 6,
+      "timeZone": "UTC-5",
+      "timeZoneName": "CDT"
     },
     {
       "id": "v07",
@@ -168,7 +180,9 @@
       "lon": -95.4107,
       "surface": "Grass",
       "opened": 2002,
-      "matches": 6
+      "matches": 6,
+      "timeZone": "UTC-5",
+      "timeZoneName": "CDT"
     },
     {
       "id": "v08",
@@ -182,7 +196,9 @@
       "lon": -121.97,
       "surface": "Grass",
       "opened": 2014,
-      "matches": 6
+      "matches": 6,
+      "timeZone": "UTC-7",
+      "timeZoneName": "PDT"
     },
     {
       "id": "v09",
@@ -196,7 +212,9 @@
       "lon": -122.3316,
       "surface": "Grass",
       "opened": 2002,
-      "matches": 5
+      "matches": 5,
+      "timeZone": "UTC-7",
+      "timeZoneName": "PDT"
     },
     {
       "id": "v10",
@@ -210,7 +228,9 @@
       "lon": -75.1675,
       "surface": "Grass",
       "opened": 2003,
-      "matches": 6
+      "matches": 6,
+      "timeZone": "UTC-4",
+      "timeZoneName": "EDT"
     },
     {
       "id": "v11",
@@ -224,7 +244,9 @@
       "lon": -71.2643,
       "surface": "Grass",
       "opened": 2002,
-      "matches": 5
+      "matches": 5,
+      "timeZone": "UTC-4",
+      "timeZoneName": "EDT"
     },
     {
       "id": "v12",
@@ -238,7 +260,9 @@
       "lon": -123.1118,
       "surface": "Grass",
       "opened": 1983,
-      "matches": 6
+      "matches": 6,
+      "timeZone": "UTC-7",
+      "timeZoneName": "PDT"
     },
     {
       "id": "v13",
@@ -252,7 +276,9 @@
       "lon": -79.4187,
       "surface": "Grass",
       "opened": 2007,
-      "matches": 6
+      "matches": 6,
+      "timeZone": "UTC-4",
+      "timeZoneName": "EDT"
     },
     {
       "id": "v14",
@@ -266,7 +292,9 @@
       "surface": "Grass",
       "opened": 1966,
       "role": "Opening match venue",
-      "matches": 8
+      "matches": 8,
+      "timeZone": "UTC-6",
+      "timeZoneName": "CST"
     },
     {
       "id": "v15",
@@ -279,7 +307,9 @@
       "lon": -103.4591,
       "surface": "Grass",
       "opened": 2010,
-      "matches": 6
+      "matches": 6,
+      "timeZone": "UTC-6",
+      "timeZoneName": "CST"
     },
     {
       "id": "v16",
@@ -292,7 +322,9 @@
       "lon": -100.2434,
       "surface": "Grass",
       "opened": 2015,
-      "matches": 6
+      "matches": 6,
+      "timeZone": "UTC-6",
+      "timeZoneName": "CST"
     }
   ],
   "teams": [
@@ -790,7 +822,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v14",
-      "city": "Mexico City"
+      "city": "Mexico City",
+      "timeOffset": "UTC-6",
+      "timeLocal": "13:00"
     },
     {
       "id": "m002",
@@ -804,7 +838,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v15",
-      "city": "Guadalajara"
+      "city": "Guadalajara",
+      "timeOffset": "UTC-6",
+      "timeLocal": "20:00"
     },
     {
       "id": "m003",
@@ -818,7 +854,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v05",
-      "city": "Atlanta"
+      "city": "Atlanta",
+      "timeOffset": "UTC-4",
+      "timeLocal": "12:00"
     },
     {
       "id": "m004",
@@ -832,7 +870,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v15",
-      "city": "Guadalajara"
+      "city": "Guadalajara",
+      "timeOffset": "UTC-6",
+      "timeLocal": "19:00"
     },
     {
       "id": "m005",
@@ -846,7 +886,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v14",
-      "city": "Mexico City"
+      "city": "Mexico City",
+      "timeOffset": "UTC-6",
+      "timeLocal": "19:00"
     },
     {
       "id": "m006",
@@ -860,7 +902,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v16",
-      "city": "Monterrey"
+      "city": "Monterrey",
+      "timeOffset": "UTC-6",
+      "timeLocal": "19:00"
     },
     {
       "id": "m007",
@@ -874,7 +918,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v13",
-      "city": "Toronto"
+      "city": "Toronto",
+      "timeOffset": "UTC-4",
+      "timeLocal": "15:00"
     },
     {
       "id": "m008",
@@ -888,7 +934,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v08",
-      "city": "Santa Clara"
+      "city": "Santa Clara",
+      "timeOffset": "UTC-7",
+      "timeLocal": "12:00"
     },
     {
       "id": "m009",
@@ -902,7 +950,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v03",
-      "city": "Inglewood"
+      "city": "Inglewood",
+      "timeOffset": "UTC-7",
+      "timeLocal": "12:00"
     },
     {
       "id": "m010",
@@ -916,7 +966,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v12",
-      "city": "Vancouver"
+      "city": "Vancouver",
+      "timeOffset": "UTC-7",
+      "timeLocal": "15:00"
     },
     {
       "id": "m011",
@@ -930,7 +982,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v12",
-      "city": "Vancouver"
+      "city": "Vancouver",
+      "timeOffset": "UTC-7",
+      "timeLocal": "12:00"
     },
     {
       "id": "m012",
@@ -944,7 +998,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v09",
-      "city": "Seattle"
+      "city": "Seattle",
+      "timeOffset": "UTC-7",
+      "timeLocal": "12:00"
     },
     {
       "id": "m013",
@@ -958,7 +1014,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v01",
-      "city": "East Rutherford"
+      "city": "East Rutherford",
+      "timeOffset": "UTC-4",
+      "timeLocal": "18:00"
     },
     {
       "id": "m014",
@@ -972,7 +1030,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v11",
-      "city": "Foxborough"
+      "city": "Foxborough",
+      "timeOffset": "UTC-4",
+      "timeLocal": "21:00"
     },
     {
       "id": "m015",
@@ -986,7 +1046,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v11",
-      "city": "Foxborough"
+      "city": "Foxborough",
+      "timeOffset": "UTC-4",
+      "timeLocal": "18:00"
     },
     {
       "id": "m016",
@@ -1000,7 +1062,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v10",
-      "city": "Philadelphia"
+      "city": "Philadelphia",
+      "timeOffset": "UTC-4",
+      "timeLocal": "20:30"
     },
     {
       "id": "m017",
@@ -1014,7 +1078,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v04",
-      "city": "Miami Gardens"
+      "city": "Miami Gardens",
+      "timeOffset": "UTC-4",
+      "timeLocal": "18:00"
     },
     {
       "id": "m018",
@@ -1028,7 +1094,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v05",
-      "city": "Atlanta"
+      "city": "Atlanta",
+      "timeOffset": "UTC-4",
+      "timeLocal": "18:00"
     },
     {
       "id": "m019",
@@ -1042,7 +1110,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v03",
-      "city": "Inglewood"
+      "city": "Inglewood",
+      "timeOffset": "UTC-7",
+      "timeLocal": "18:00"
     },
     {
       "id": "m020",
@@ -1056,7 +1126,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v12",
-      "city": "Vancouver"
+      "city": "Vancouver",
+      "timeOffset": "UTC-7",
+      "timeLocal": "21:00"
     },
     {
       "id": "m021",
@@ -1070,7 +1142,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v09",
-      "city": "Seattle"
+      "city": "Seattle",
+      "timeOffset": "UTC-7",
+      "timeLocal": "12:00"
     },
     {
       "id": "m022",
@@ -1084,7 +1158,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v08",
-      "city": "Santa Clara"
+      "city": "Santa Clara",
+      "timeOffset": "UTC-7",
+      "timeLocal": "20:00"
     },
     {
       "id": "m023",
@@ -1098,7 +1174,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v03",
-      "city": "Inglewood"
+      "city": "Inglewood",
+      "timeOffset": "UTC-7",
+      "timeLocal": "19:00"
     },
     {
       "id": "m024",
@@ -1112,7 +1190,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v08",
-      "city": "Santa Clara"
+      "city": "Santa Clara",
+      "timeOffset": "UTC-7",
+      "timeLocal": "19:00"
     },
     {
       "id": "m025",
@@ -1126,7 +1206,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v07",
-      "city": "Houston"
+      "city": "Houston",
+      "timeOffset": "UTC-5",
+      "timeLocal": "12:00"
     },
     {
       "id": "m026",
@@ -1140,7 +1222,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v10",
-      "city": "Philadelphia"
+      "city": "Philadelphia",
+      "timeOffset": "UTC-4",
+      "timeLocal": "19:00"
     },
     {
       "id": "m027",
@@ -1154,7 +1238,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v13",
-      "city": "Toronto"
+      "city": "Toronto",
+      "timeOffset": "UTC-4",
+      "timeLocal": "16:00"
     },
     {
       "id": "m028",
@@ -1168,7 +1254,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v06",
-      "city": "Kansas City"
+      "city": "Kansas City",
+      "timeOffset": "UTC-5",
+      "timeLocal": "19:00"
     },
     {
       "id": "m029",
@@ -1182,7 +1270,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v10",
-      "city": "Philadelphia"
+      "city": "Philadelphia",
+      "timeOffset": "UTC-4",
+      "timeLocal": "16:00"
     },
     {
       "id": "m030",
@@ -1196,7 +1286,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v01",
-      "city": "East Rutherford"
+      "city": "East Rutherford",
+      "timeOffset": "UTC-4",
+      "timeLocal": "16:00"
     },
     {
       "id": "m031",
@@ -1210,7 +1302,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v02",
-      "city": "Arlington"
+      "city": "Arlington",
+      "timeOffset": "UTC-5",
+      "timeLocal": "15:00"
     },
     {
       "id": "m032",
@@ -1224,7 +1318,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v16",
-      "city": "Monterrey"
+      "city": "Monterrey",
+      "timeOffset": "UTC-6",
+      "timeLocal": "20:00"
     },
     {
       "id": "m033",
@@ -1238,7 +1334,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v07",
-      "city": "Houston"
+      "city": "Houston",
+      "timeOffset": "UTC-5",
+      "timeLocal": "12:00"
     },
     {
       "id": "m034",
@@ -1252,7 +1350,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v16",
-      "city": "Monterrey"
+      "city": "Monterrey",
+      "timeOffset": "UTC-6",
+      "timeLocal": "22:00"
     },
     {
       "id": "m035",
@@ -1266,7 +1366,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v02",
-      "city": "Arlington"
+      "city": "Arlington",
+      "timeOffset": "UTC-5",
+      "timeLocal": "18:00"
     },
     {
       "id": "m036",
@@ -1280,7 +1382,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v06",
-      "city": "Kansas City"
+      "city": "Kansas City",
+      "timeOffset": "UTC-5",
+      "timeLocal": "18:00"
     },
     {
       "id": "m037",
@@ -1294,7 +1398,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v09",
-      "city": "Seattle"
+      "city": "Seattle",
+      "timeOffset": "UTC-7",
+      "timeLocal": "12:00"
     },
     {
       "id": "m038",
@@ -1308,7 +1414,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v03",
-      "city": "Inglewood"
+      "city": "Inglewood",
+      "timeOffset": "UTC-7",
+      "timeLocal": "18:00"
     },
     {
       "id": "m039",
@@ -1322,7 +1430,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v03",
-      "city": "Inglewood"
+      "city": "Inglewood",
+      "timeOffset": "UTC-7",
+      "timeLocal": "12:00"
     },
     {
       "id": "m040",
@@ -1336,7 +1446,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v12",
-      "city": "Vancouver"
+      "city": "Vancouver",
+      "timeOffset": "UTC-7",
+      "timeLocal": "18:00"
     },
     {
       "id": "m041",
@@ -1350,7 +1462,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v09",
-      "city": "Seattle"
+      "city": "Seattle",
+      "timeOffset": "UTC-7",
+      "timeLocal": "20:00"
     },
     {
       "id": "m042",
@@ -1364,7 +1478,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v12",
-      "city": "Vancouver"
+      "city": "Vancouver",
+      "timeOffset": "UTC-7",
+      "timeLocal": "20:00"
     },
     {
       "id": "m043",
@@ -1378,7 +1494,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v05",
-      "city": "Atlanta"
+      "city": "Atlanta",
+      "timeOffset": "UTC-4",
+      "timeLocal": "12:00"
     },
     {
       "id": "m044",
@@ -1392,7 +1510,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v04",
-      "city": "Miami Gardens"
+      "city": "Miami Gardens",
+      "timeOffset": "UTC-4",
+      "timeLocal": "18:00"
     },
     {
       "id": "m045",
@@ -1406,7 +1526,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v05",
-      "city": "Atlanta"
+      "city": "Atlanta",
+      "timeOffset": "UTC-4",
+      "timeLocal": "12:00"
     },
     {
       "id": "m046",
@@ -1420,7 +1542,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v04",
-      "city": "Miami Gardens"
+      "city": "Miami Gardens",
+      "timeOffset": "UTC-4",
+      "timeLocal": "18:00"
     },
     {
       "id": "m047",
@@ -1434,7 +1558,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v07",
-      "city": "Houston"
+      "city": "Houston",
+      "timeOffset": "UTC-5",
+      "timeLocal": "19:00"
     },
     {
       "id": "m048",
@@ -1448,7 +1574,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v15",
-      "city": "Guadalajara"
+      "city": "Guadalajara",
+      "timeOffset": "UTC-6",
+      "timeLocal": "18:00"
     },
     {
       "id": "m049",
@@ -1462,7 +1590,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v01",
-      "city": "East Rutherford"
+      "city": "East Rutherford",
+      "timeOffset": "UTC-4",
+      "timeLocal": "15:00"
     },
     {
       "id": "m050",
@@ -1476,7 +1606,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v11",
-      "city": "Foxborough"
+      "city": "Foxborough",
+      "timeOffset": "UTC-4",
+      "timeLocal": "18:00"
     },
     {
       "id": "m051",
@@ -1490,7 +1622,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v10",
-      "city": "Philadelphia"
+      "city": "Philadelphia",
+      "timeOffset": "UTC-4",
+      "timeLocal": "17:00"
     },
     {
       "id": "m052",
@@ -1504,7 +1638,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v01",
-      "city": "East Rutherford"
+      "city": "East Rutherford",
+      "timeOffset": "UTC-4",
+      "timeLocal": "20:00"
     },
     {
       "id": "m053",
@@ -1518,7 +1654,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v11",
-      "city": "Foxborough"
+      "city": "Foxborough",
+      "timeOffset": "UTC-4",
+      "timeLocal": "15:00"
     },
     {
       "id": "m054",
@@ -1532,7 +1670,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v13",
-      "city": "Toronto"
+      "city": "Toronto",
+      "timeOffset": "UTC-4",
+      "timeLocal": "15:00"
     },
     {
       "id": "m055",
@@ -1546,7 +1686,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v06",
-      "city": "Kansas City"
+      "city": "Kansas City",
+      "timeOffset": "UTC-5",
+      "timeLocal": "20:00"
     },
     {
       "id": "m056",
@@ -1560,7 +1702,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v08",
-      "city": "Santa Clara"
+      "city": "Santa Clara",
+      "timeOffset": "UTC-7",
+      "timeLocal": "21:00"
     },
     {
       "id": "m057",
@@ -1574,7 +1718,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v02",
-      "city": "Arlington"
+      "city": "Arlington",
+      "timeOffset": "UTC-5",
+      "timeLocal": "12:00"
     },
     {
       "id": "m058",
@@ -1588,7 +1734,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v08",
-      "city": "Santa Clara"
+      "city": "Santa Clara",
+      "timeOffset": "UTC-7",
+      "timeLocal": "20:00"
     },
     {
       "id": "m059",
@@ -1602,7 +1750,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v06",
-      "city": "Kansas City"
+      "city": "Kansas City",
+      "timeOffset": "UTC-5",
+      "timeLocal": "21:00"
     },
     {
       "id": "m060",
@@ -1616,7 +1766,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v02",
-      "city": "Arlington"
+      "city": "Arlington",
+      "timeOffset": "UTC-5",
+      "timeLocal": "21:00"
     },
     {
       "id": "m061",
@@ -1630,7 +1782,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v07",
-      "city": "Houston"
+      "city": "Houston",
+      "timeOffset": "UTC-5",
+      "timeLocal": "12:00"
     },
     {
       "id": "m062",
@@ -1644,7 +1798,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v14",
-      "city": "Mexico City"
+      "city": "Mexico City",
+      "timeOffset": "UTC-6",
+      "timeLocal": "20:00"
     },
     {
       "id": "m063",
@@ -1658,7 +1814,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v07",
-      "city": "Houston"
+      "city": "Houston",
+      "timeOffset": "UTC-5",
+      "timeLocal": "12:00"
     },
     {
       "id": "m064",
@@ -1672,7 +1830,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v15",
-      "city": "Guadalajara"
+      "city": "Guadalajara",
+      "timeOffset": "UTC-6",
+      "timeLocal": "20:00"
     },
     {
       "id": "m065",
@@ -1686,7 +1846,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v04",
-      "city": "Miami Gardens"
+      "city": "Miami Gardens",
+      "timeOffset": "UTC-4",
+      "timeLocal": "19:30"
     },
     {
       "id": "m066",
@@ -1700,7 +1862,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v05",
-      "city": "Atlanta"
+      "city": "Atlanta",
+      "timeOffset": "UTC-4",
+      "timeLocal": "19:30"
     },
     {
       "id": "m067",
@@ -1714,7 +1878,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v02",
-      "city": "Arlington"
+      "city": "Arlington",
+      "timeOffset": "UTC-5",
+      "timeLocal": "15:00"
     },
     {
       "id": "m068",
@@ -1728,7 +1894,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v13",
-      "city": "Toronto"
+      "city": "Toronto",
+      "timeOffset": "UTC-4",
+      "timeLocal": "19:00"
     },
     {
       "id": "m069",
@@ -1742,7 +1910,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v11",
-      "city": "Foxborough"
+      "city": "Foxborough",
+      "timeOffset": "UTC-4",
+      "timeLocal": "16:00"
     },
     {
       "id": "m070",
@@ -1756,7 +1926,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v13",
-      "city": "Toronto"
+      "city": "Toronto",
+      "timeOffset": "UTC-4",
+      "timeLocal": "19:00"
     },
     {
       "id": "m071",
@@ -1770,7 +1942,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v01",
-      "city": "East Rutherford"
+      "city": "East Rutherford",
+      "timeOffset": "UTC-4",
+      "timeLocal": "17:00"
     },
     {
       "id": "m072",
@@ -1784,7 +1958,9 @@
       "score2": null,
       "status": "UPCOMING",
       "venue": "v10",
-      "city": "Philadelphia"
+      "city": "Philadelphia",
+      "timeOffset": "UTC-4",
+      "timeLocal": "17:00"
     }
   ],
   "standings": {
