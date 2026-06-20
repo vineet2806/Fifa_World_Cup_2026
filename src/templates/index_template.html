@@ -458,9 +458,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
     <p class="hero-sub" id="heroStage">Loading tournament status…</p>
     <p style="font-size:.78rem;color:var(--text-m);margin-top:-12px;margin-bottom:20px">🔄 Auto-refreshes every 5 minutes &nbsp;·&nbsp; Reload the page to see the latest scores</p>
     <div class="hero-hosts">
-      <div class="hero-host"><span class="hero-flag">${flagIcon('USA', 'lg')}</span><span>United States</span></div>
-      <div class="hero-host"><span class="hero-flag">${flagIcon('MEX', 'lg')}</span><span>Mexico</span></div>
-      <div class="hero-host"><span class="hero-flag">${flagIcon('CAN', 'lg')}</span><span>Canada</span></div>
+      <div class="hero-host"><span class="hero-flag"><img src="flags/USA.png" alt="USA flag" style="width:32px;height:22px;object-fit:cover;border-radius:4px;vertical-align:middle;box-shadow:0 0 0 1px rgba(255,255,255,.1)" loading="lazy"></span><span>United States</span></div>
+      <div class="hero-host"><span class="hero-flag"><img src="flags/MEX.png" alt="MEX flag" style="width:32px;height:22px;object-fit:cover;border-radius:4px;vertical-align:middle;box-shadow:0 0 0 1px rgba(255,255,255,.1)" loading="lazy"></span><span>Mexico</span></div>
+      <div class="hero-host"><span class="hero-flag"><img src="flags/CAN.png" alt="CAN flag" style="width:32px;height:22px;object-fit:cover;border-radius:4px;vertical-align:middle;box-shadow:0 0 0 1px rgba(255,255,255,.1)" loading="lazy"></span><span>Canada</span></div>
     </div>
     <div class="hero-stats">
       <div class="hero-stat"><div class="hero-stat-val">48</div><div class="hero-stat-lbl">Teams</div></div>
@@ -670,9 +670,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
     <div class="section-title"><span>🏟️</span> Host Venues &amp; Cities</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
       <button class="btn btn-ghost btn-sm active" onclick="filterVenues('')" id="vAll">All (17)</button>
-      <button class="btn btn-ghost btn-sm" onclick="filterVenues('USA')" id="vUSA">🇺🇸 USA (11)</button>
-      <button class="btn btn-ghost btn-sm" onclick="filterVenues('Canada')" id="vCAN">🇨🇦 Canada (3)</button>
-      <button class="btn btn-ghost btn-sm" onclick="filterVenues('Mexico')" id="vMEX">🇲🇽 Mexico (3)</button>
+      <button class="btn btn-ghost btn-sm" onclick="filterVenues('USA')" id="vUSA"><img src="flags/USA.png" style="width:18px;height:13px;object-fit:cover;border-radius:2px;vertical-align:middle;margin-right:4px" loading="lazy">USA (11)</button>
+      <button class="btn btn-ghost btn-sm" onclick="filterVenues('Canada')" id="vCAN"><img src="flags/CAN.png" style="width:18px;height:13px;object-fit:cover;border-radius:2px;vertical-align:middle;margin-right:4px" loading="lazy">Canada (3)</button>
+      <button class="btn btn-ghost btn-sm" onclick="filterVenues('Mexico')" id="vMEX"><img src="flags/MEX.png" style="width:18px;height:13px;object-fit:cover;border-radius:2px;vertical-align:middle;margin-right:4px" loading="lazy">Mexico (3)</button>
     </div>
     <div id="venuesGrid" class="grid4"></div>
   </div>
@@ -1499,7 +1499,10 @@ function renderVenues(filter){
   const venues = (D.venues||[]).filter(v => !filter || v.country===filter);
   document.getElementById('venuesGrid').innerHTML = venues.map(v => `
     <div class="venue-card">
-      <div class="venue-country vc-${v.country?.replace(/\s/g,'')}">${v.flag||''} ${v.country}</div>
+      <div class="venue-country vc-${v.country?.replace(/\s/g,'')}">
+        <img src="flags/${v.country==='USA'?'USA':v.country==='Canada'?'CAN':'MEX'}.png" alt="${v.country} flag" style="width:18px;height:13px;object-fit:cover;border-radius:2px;vertical-align:middle;margin-right:4px" loading="lazy">
+        ${v.country}
+      </div>
       <div class="venue-name">${v.name}</div>
       <div class="venue-city">${v.city}${v.state?', '+v.state:''}</div>
       <div class="venue-cap">🏟️ Capacity: ${(v.capacity||0).toLocaleString()} · Opened ${v.opened||'?'}</div>
