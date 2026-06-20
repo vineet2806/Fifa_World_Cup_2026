@@ -119,6 +119,17 @@ input,select{font-family:inherit}
 #hamburger span{width:18px;height:2px;background:currentColor;display:block;border-radius:2px;transition:all .3s}
 @media(max-width:768px){.nav-links{display:none}.nav-links.open{display:flex;flex-direction:column;position:fixed;top:var(--nav-h);left:0;right:0;background:var(--bg2);padding:12px;border-bottom:1px solid var(--border);z-index:999}.nav-link{width:100%;text-align:left}#hamburger{display:flex}}
 
+
+/* ── Theme Backgrounds ── */
+.bg-img{position:relative;background-size:cover;background-position:center}
+.bg-img::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,26,.78) 0%,rgba(6,7,26,.92) 100%);z-index:0}
+.bg-img > .container{position:relative;z-index:1}
+#hero.hero-img::before{content:'';position:absolute;inset:0;background:url('images/trophy.svg') center/cover no-repeat;opacity:.22;z-index:0}
+#today{background-image:url('images/football.svg')}
+#schedule{background-image:url('images/stadium.svg')}
+#bracket{background-image:url('images/player.svg')}
+#stats{background-image:url('images/fans.svg')}
+
 /* ── HERO ── */
 #hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:var(--nav-h) 20px 60px;position:relative;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden}
@@ -1041,7 +1052,12 @@ function getFilteredMatches(){
   const g = document.getElementById('schedGroup').value;
   const st = document.getElementById('schedStatus').value;
   const tid = document.getElementById('schedTeam').value;
-  return (D.matches||[]).filter(m => {
+  const sorted = [...(D.matches||[])].sort((a,b)=>{
+    const da = (a.dateIST || a.dateUTC || a.date), db = (b.dateIST || b.dateUTC || b.date);
+    if(da!==db) return da.localeCompare(db);
+    return (a.timeUTC||'').localeCompare(b.timeUTC||'');
+  });
+  return sorted.filter(m => {
     const t1 = team(m.team1), t2 = team(m.team2), v = venue(m.venue);
     if(q && !`${t1.name} ${t2.name} ${v.city} ${v.name}`.toLowerCase().includes(q)) return false;
     if(g && m.group!==g) return false;

@@ -1,0 +1,32 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'>
+  <defs>
+    <radialGradient id='fg' cx='0.5' cy='0.3' r='0.9'>
+      <stop offset='0' stop-color='#22c55e' stop-opacity='0.18'/>
+      <stop offset='0.5' stop-color='#3b82f6' stop-opacity='0.12'/>
+      <stop offset='1' stop-color='#06071a' stop-opacity='0'/>
+    </radialGradient>
+  </defs>
+  <rect width='800' height='600' fill='#06071a'/>
+  <rect x='0' y='0' width='800' height='600' fill='url(#fg)'/>
+  <g opacity='0.08' fill='#f0f4ff'>
+    <circle cx='100' cy='500' r='25'/>
+    <circle cx='150' cy='520' r='20'/>
+    <circle cx='200' cy='500' r='22'/>
+    <circle cx='300' cy='530' r='28'/>
+    <circle cx='380' cy='500' r='24'/>
+    <circle cx='500' cy='540' r='30'/>
+    <circle cx='600' cy='510' r='26'/>
+    <circle cx='700' cy='530' r='22'/>
+  </g>
+  <g stroke='#f0f4ff' stroke-width='4' opacity='0.04' fill='none'>
+    <path d='M0 450 Q100 430 200 450 T400 450 T600 440 T800 450'/>
+    <path d='M0 470 Q150 450 300 470 T600 460 T800 470'/>
+  </g>
+  <g opacity='0.06'>
+    <rect x='100' y='300' width='40' height='60' fill='#e63946'/>
+    <rect x='180' y='280' width='40' height='80' fill='#3b82f6'/>
+    <rect x='260' y='310' width='40' height='50' fill='#fbbf24'/>
+    <rect x='500' y='290' width='40' height='70' fill='#22c55e'/>
+    <rect x='580' y='320' width='40' height='40' fill='#a855f7'/>
+  </g>
+</svg>

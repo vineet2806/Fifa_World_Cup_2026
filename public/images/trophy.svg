@@ -1,0 +1,21 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'>
+  <defs>
+    <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0' stop-color='#fbbf24' stop-opacity='0.35'/>
+      <stop offset='1' stop-color='#fbbf24' stop-opacity='0'/>
+    </linearGradient>
+  </defs>
+  <rect width='800' height='600' fill='#06071a'/>
+  <circle cx='400' cy='300' r='260' fill='url(#g)'/>
+  <g transform='translate(320,120)' fill='none' stroke='#fbbf24' stroke-width='10' opacity='0.25'>
+    <path d='M80 80 Q160 220 160 360 L100 360 L100 420 L220 420 L220 360 L160 360 Q160 220 240 80' stroke-linecap='round'/>
+    <path d='M40 100 Q80 60 120 100' stroke-linecap='round'/>
+    <path d='M200 100 Q240 60 280 100' stroke-linecap='round'/>
+    <rect x='60' y='420' width='200' height='40' rx='8' stroke-linejoin='round'/>
+  </g>
+  <g fill='#fbbf24' opacity='0.15'>
+    <polygon points='120,100 130,130 160,130 136,150 146,180 120,162 94,180 104,150 80,130 110,130'/>
+    <polygon points='680,100 690,130 720,130 696,150 706,180 680,162 654,180 664,150 640,130 670,130'/>
+    <polygon points='400,40 410,70 440,70 416,90 426,120 400,102 374,120 384,90 360,70 390,70'/>
+  </g>
+</svg>
