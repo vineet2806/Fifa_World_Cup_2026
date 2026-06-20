@@ -1,6 +1,8 @@
 name: Daily Dashboard Refresh
 
 on:
+  push:
+    branches: [main]
   schedule:
     # Every 5 minutes. GitHub scheduled workflows may run with some delay.
     - cron: "*/5 * * * *"
@@ -14,6 +16,10 @@ on:
 
 permissions:
   contents: read
+
+concurrency:
+  group: wc2026-dashboard-production
+  cancel-in-progress: true
 
 jobs:
   build-and-deploy:
