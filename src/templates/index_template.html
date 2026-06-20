@@ -337,7 +337,8 @@ input,select{font-family:inherit}
 .venues-map{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-xl);padding:24px;margin-bottom:24px;position:relative;min-height:200px}
 .venue-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px;transition:all .2s;cursor:default}
 .venue-card:hover{background:var(--card-h);border-color:var(--border-h);box-shadow:var(--shadow)}
-.venue-country{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.venue-country{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.venue-country img{flex-shrink:0;vertical-align:middle}
 .vc-USA{color:var(--blue)}
 .vc-Canada{color:var(--red)}
 .vc-Mexico{color:var(--green)}
@@ -670,9 +671,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
     <div class="section-title"><span>🏟️</span> Host Venues &amp; Cities</div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
       <button class="btn btn-ghost btn-sm active" onclick="filterVenues('')" id="vAll">All (17)</button>
-      <button class="btn btn-ghost btn-sm" onclick="filterVenues('USA')" id="vUSA"><img src="flags/USA.png" style="width:18px;height:13px;object-fit:cover;border-radius:2px;vertical-align:middle;margin-right:4px" loading="lazy">USA (11)</button>
-      <button class="btn btn-ghost btn-sm" onclick="filterVenues('Canada')" id="vCAN"><img src="flags/CAN.png" style="width:18px;height:13px;object-fit:cover;border-radius:2px;vertical-align:middle;margin-right:4px" loading="lazy">Canada (3)</button>
-      <button class="btn btn-ghost btn-sm" onclick="filterVenues('Mexico')" id="vMEX"><img src="flags/MEX.png" style="width:18px;height:13px;object-fit:cover;border-radius:2px;vertical-align:middle;margin-right:4px" loading="lazy">Mexico (3)</button>
+      <button class="btn btn-ghost btn-sm" onclick="filterVenues('USA')" id="vUSA" style="display:inline-flex;align-items:center;gap:6px"><img src="flags/USA.png" width="18" height="13" style="object-fit:cover;border-radius:2px" loading="lazy">USA (11)</button>
+      <button class="btn btn-ghost btn-sm" onclick="filterVenues('Canada')" id="vCAN" style="display:inline-flex;align-items:center;gap:6px"><img src="flags/CAN.png" width="18" height="13" style="object-fit:cover;border-radius:2px" loading="lazy">Canada (3)</button>
+      <button class="btn btn-ghost btn-sm" onclick="filterVenues('Mexico')" id="vMEX" style="display:inline-flex;align-items:center;gap:6px"><img src="flags/MEX.png" width="18" height="13" style="object-fit:cover;border-radius:2px" loading="lazy">Mexico (3)</button>
     </div>
     <div id="venuesGrid" class="grid4"></div>
   </div>
@@ -1520,10 +1521,11 @@ function renderInsights(){
 function renderVenues(filter){
   currentVenueFilter = filter||'';
   const venues = (D.venues||[]).filter(v => !filter || v.country===filter);
+  const countryFlag = {'USA':'USA','Canada':'CAN','Mexico':'MEX'};
   document.getElementById('venuesGrid').innerHTML = venues.map(v => `
     <div class="venue-card">
       <div class="venue-country vc-${v.country?.replace(/\s/g,'')}">
-        <img src="flags/${v.country==='USA'?'USA':v.country==='Canada'?'CAN':'MEX'}.png" alt="${v.country} flag" style="width:18px;height:13px;object-fit:cover;border-radius:2px;vertical-align:middle;margin-right:4px" loading="lazy">
+        <img src="flags/${countryFlag[v.country]||'USA'}.png" alt="${v.country} flag" width="18" height="13" style="object-fit:cover;border-radius:2px" loading="lazy">
         ${v.country}
       </div>
       <div class="venue-name">${v.name}</div>
