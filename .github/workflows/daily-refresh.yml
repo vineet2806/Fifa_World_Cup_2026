@@ -2,7 +2,7 @@ name: Daily Dashboard Refresh
 
 on:
   schedule:
-    # Every 5 minutes — public repo gets unlimited GitHub Actions minutes
+    # Every 5 minutes. GitHub scheduled workflows may run with some delay.
     - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:

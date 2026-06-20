@@ -1,6 +1,6 @@
 # ⚽ FIFA World Cup 2026 — Fan Dashboard
 
-An unofficial, fully automated, self-contained fan dashboard for the FIFA World Cup 2026, hosted on Azure Static Web Apps and refreshed daily at **6:00 AM IST**.
+An unofficial, fully automated, self-contained fan dashboard for the FIFA World Cup 2026, hosted on Azure Static Web Apps and rebuilt every **5 minutes**.
 
 > **Disclaimer:** This is an unofficial fan project. FIFA, World Cup, and related marks are property of FIFA. This site is not affiliated with or endorsed by FIFA.
 
@@ -49,7 +49,7 @@ Fifa_World_Cup_2026/
 │   └── build.log               ← Latest build log
 ├── .github/
 │   └── workflows/
-│       └── daily-refresh.yml   ← GitHub Actions (6 AM IST daily)
+│       └── daily-refresh.yml   ← GitHub Actions (every 5 minutes)
 ├── staticwebapp.config.json    ← Azure Static Web Apps config
 └── README.md
 ```
@@ -192,15 +192,15 @@ The Python script replaces `__WC2026_DATA_JSON__` in the HTML template with the 
 
 ---
 
-## 📅 Daily Refresh Schedule
+## 📅 Refresh Schedule
 
 | Event | Time |
 |---|---|
-| GitHub Actions trigger | 00:30 UTC |
-| IST equivalent | 06:00 AM IST |
+| GitHub Actions trigger | Every 5 minutes |
+| Cron expression | `*/5 * * * *` |
 | Data fetched from | Public GitHub JSON endpoints |
 | Output deployed to | Azure Static Web Apps |
-| Fallback if fetch fails | Cached data from previous run |
+| Fallback if fetch fails | Cached data, then `data/manual_fallbacks.json` |
 
 ---
 

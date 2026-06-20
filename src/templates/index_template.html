@@ -664,7 +664,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
   <div class="footer-grid">
     <div>
       <div class="footer-logo">⚽ WC2026 Fan Dashboard</div>
-      <p class="footer-desc">An unofficial fan dashboard for the FIFA World Cup 2026. Data refreshes automatically every 5 minutes from public sources. Not affiliated with FIFA.</p>
+      <p class="footer-desc">An unofficial fan dashboard for the FIFA World Cup 2026. The page rebuilds every 5 minutes via GitHub Actions. Not affiliated with FIFA.</p>
     </div>
     <div>
       <div class="footer-heading">Data Sources</div>
@@ -676,7 +676,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
     <div>
       <div class="footer-heading">About</div>
       <a class="footer-link" href="https://github.com" target="_blank" rel="noopener">View on GitHub</a>
-      <p class="footer-desc" style="margin-top:8px">Refreshed automatically every 5 minutes via GitHub Actions → Azure Static Web Apps.</p>
+      <p id="refreshStatus" class="footer-desc" style="margin-top:8px">Rebuilt automatically every 5 minutes via GitHub Actions → Azure Static Web Apps.</p>
       <div id="footerUpdated" class="footer-updated" style="margin-top:12px"></div>
     </div>
   </div>
@@ -1561,14 +1561,18 @@ window.clearFav = function(){
 function renderFooter(){
   const m = D.meta||{};
   const ts = m.generatedAt ? new Date(m.generatedAt).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',dateStyle:'medium',timeStyle:'short'}) : 'Unknown';
-  document.getElementById('footerUpdated').textContent = `🕐 Last updated: ${ts} IST`;
+  document.getElementById('footerUpdated').textContent = `🕐 Last rebuilt: ${ts} IST`;
 
-  // Only show warnings that are actually critical to the user.
-  // "HTTP fetches failed — using manual fallback" is expected (no live data source exists yet),
-  // so suppress it to avoid alarming visitors.
-  const warns = (m.dataQualityWarnings||[]).filter(w => !/HTTP fetches failed|using manual fallback/i.test(w));
+  const status = document.getElementById('refreshStatus');
+  if(status && m.isLiveData === false){
+    status.textContent = 'Rebuilt every 5 minutes; live source unavailable, showing fallback data.';
+  }
+
+  const warns = m.isLiveData === false
+    ? ['Live source unavailable — showing fallback data until a valid feed returns data.']
+    : (m.dataQualityWarnings||[]);
   if(warns.length){
-    document.getElementById('dataWarnings').innerHTML = `<div style="font-size:.7rem;color:var(--gold);background:var(--gold-d);padding:8px 12px;border-radius:var(--r);border:1px solid rgba(251,191,36,.25);max-width:300px">
+    document.getElementById('dataWarnings').innerHTML = `<div style="font-size:.7rem;color:var(--gold);background:var(--gold-d);padding:8px 12px;border-radius:var(--r);border:1px solid rgba(251,191,36,.25);max-width:340px">
       ⚠️ ${warns[0]}
     </div>`;
   }
