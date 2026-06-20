@@ -7,6 +7,7 @@
 <meta name="description" content="Unofficial FIFA World Cup 2026 fan dashboard. Live scores, standings, schedule, stats, and AI insights. Data refreshed daily.">
 <meta name="robots" content="index,follow">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@6.11.0/css/flag-icons.min.css" crossorigin="anonymous">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -129,6 +130,12 @@ input,select{font-family:inherit}
 #schedule{background-image:url('images/stadium.svg')}
 #bracket{background-image:url('images/player.svg')}
 #stats{background-image:url('images/fans.svg')}
+
+
+/* Flag icon sizing */
+.fi-sm{width:1.2em;height:.9em;vertical-align:middle;margin-right:.25em;border-radius:2px;box-shadow:0 0 0 1px rgba(255,255,255,.1)}
+.fi-lg{width:2.2em;height:1.65em;vertical-align:middle;border-radius:4px;box-shadow:0 0 0 1px rgba(255,255,255,.1)}
+.team-cell .fi-sm{margin-right:.35em}
 
 /* ── HERO ── */
 #hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:var(--nav-h) 20px 60px;position:relative;overflow:hidden}
@@ -450,9 +457,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
     <p class="hero-sub" id="heroStage">Loading tournament status…</p>
     <p style="font-size:.78rem;color:var(--text-m);margin-top:-12px;margin-bottom:20px">🔄 Auto-refreshes every 5 minutes &nbsp;·&nbsp; Reload the page to see the latest scores</p>
     <div class="hero-hosts">
-      <div class="hero-host"><span class="hero-flag">🇺🇸</span><span>United States</span></div>
-      <div class="hero-host"><span class="hero-flag">🇲🇽</span><span>Mexico</span></div>
-      <div class="hero-host"><span class="hero-flag">🇨🇦</span><span>Canada</span></div>
+      <div class="hero-host"><span class="hero-flag">${flagIcon('USA', 'lg')}</span><span>United States</span></div>
+      <div class="hero-host"><span class="hero-flag">${flagIcon('MEX', 'lg')}</span><span>Mexico</span></div>
+      <div class="hero-host"><span class="hero-flag">${flagIcon('CAN', 'lg')}</span><span>Canada</span></div>
     </div>
     <div class="hero-stats">
       <div class="hero-stat"><div class="hero-stat-val">48</div><div class="hero-stat-lbl">Teams</div></div>
@@ -786,6 +793,21 @@ function enrichMatchTimes(){
 enrichMatchTimes();
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
+const FLAG_CLASS = {
+  ALG:'dz', ARG:'ar', AUS:'au', AUT:'at', BEL:'be', BIH:'ba', BRA:'br', CAN:'ca', CIV:'ci',
+  COD:'cd', COL:'co', CPV:'cv', CRO:'hr', CUW:'cw', CZE:'cz', ECU:'ec', EGY:'eg', ENG:'gb-eng',
+  ESP:'es', FRA:'fr', GER:'de', GHA:'gh', HAI:'ht', IRN:'ir', IRQ:'iq', JOR:'jo', JPN:'jp',
+  KOR:'kr', KSA:'sa', MAR:'ma', MEX:'mx', NED:'nl', NOR:'no', NZL:'nz', PAN:'pa', PAR:'py',
+  POR:'pt', QAT:'qa', RSA:'za', SCO:'gb-sct', SEN:'sn', SUI:'ch', SWE:'se', TUN:'tn', TUR:'tr',
+  URU:'uy', USA:'us', UZB:'uz'
+};
+
+function flagIcon(id, size='sm'){
+  const cc = FLAG_CLASS[id];
+  if(!cc) return (TEAMS[id] && TEAMS[id].flag) ? `<span style=\"font-size:1.1em\">${TEAMS[id].flag}</span>` : '';
+  return `<span class=\"fi fi-${cc} fi-${size}\" aria-label=\"${id} flag\"></span>`;
+}
+
 function team(id){ return TEAMS[id] || {id, name:id, flag:'🏳️'} }
 function venue(id){ return VENUES_MAP[id] || {name:id||'TBD', city:''} }
 
@@ -919,12 +941,12 @@ function updateCountdown(){
   if(live){
     const t1 = team(live.team1), t2 = team(live.team2);
     document.getElementById('cdLabel').textContent = '🔴 LIVE NOW';
-    document.getElementById('cdMatchInfo').textContent = `${t1.flag} ${t1.name} vs ${t2.flag} ${t2.name}`;
+    document.getElementById('cdMatchInfo').textContent = `${flagIcon(t1.id)} ${t1.name} vs ${flagIcon(t2.id)} ${t2.name}`;
   } else if(nextUpcoming){
     document.getElementById('cdLabel').textContent = 'Next Match In';
     const t1 = team(nextUpcoming.m.team1), t2 = team(nextUpcoming.m.team2);
     document.getElementById('cdMatchInfo').textContent =
-      `${t1.flag} ${t1.name} vs ${t2.flag} ${t2.name} · ${nextUpcoming.m.timeIST||''} IST`;
+      `${flagIcon(t1.id)} ${t1.name} vs ${flagIcon(t2.id)} ${t2.name} · ${nextUpcoming.m.timeIST||''} IST`;
   } else {
     document.getElementById('cdLabel').textContent = 'Tournament Ongoing';
     ['d','h','m','s'].forEach(u => document.getElementById('cd-'+u).textContent = '--');
@@ -991,12 +1013,12 @@ function matchCardHTML(m, size){
     </div>
     <div class="match-teams">
       <div class="match-team">
-        <div class="team-flag" aria-label="${t1.name}">${t1.flag}</div>
+        <div class="team-flag" aria-label="${t1.name}">${flagIcon(t1.id)}</div>
         <div class="team-name ${size==='sm'?'team-name-sm':''}">${t1.name}</div>
       </div>
       <div style="text-align:center">${scoreHTML}</div>
       <div class="match-team">
-        <div class="team-flag" aria-label="${t2.name}">${t2.flag}</div>
+        <div class="team-flag" aria-label="${t2.name}">${flagIcon(t2.id)}</div>
         <div class="team-name ${size==='sm'?'team-name-sm':''}">${t2.name}</div>
       </div>
     </div>
@@ -1088,9 +1110,9 @@ function renderSchedule(){
       return `<tr>
         <td style="white-space:nowrap;font-size:.78rem">${istDate||m.date||''}${localTimeLabel}</td>
         <td style="font-size:.78rem;white-space:nowrap">${m.timeIST||'—'} IST</td>
-        <td><div class="team-cell">${t1.flag} ${t1.name}</div></td>
+        <td><div class="team-cell">${flagIcon(t1.id)} ${t1.name}</div></td>
         ${scoreCell}
-        <td><div class="team-cell">${t2.flag} ${t2.name}</div></td>
+        <td><div class="team-cell">${flagIcon(t2.id)} ${t2.name}</div></td>
         <td><span class="badge badge-group" style="font-size:.68rem">G${m.group||''}</span></td>
         <td style="font-size:.75rem;white-space:nowrap">${v.name}, ${v.city}</td>
         <td>${statusBadge(m.status, m.minute)}</td>
@@ -1149,7 +1171,7 @@ function renderStandingsTable(){
     const favMark = isFav(r.team) ? '⭐ ' : '';
     return `<tr class="${rowCls}">
       <td class="${posCls}">${r.position||i+1}</td>
-      <td><div class="team-cell">${t.flag} ${favMark}${t.name}</div></td>
+      <td><div class="team-cell">${flagIcon(t.id)} ${favMark}${t.name}</div></td>
       <td style="text-align:center">${r.played}</td>
       <td style="text-align:center">${r.won}</td>
       <td style="text-align:center">${r.drawn}</td>
@@ -1180,9 +1202,9 @@ function renderStandingsTable(){
     <div class="grid2" style="gap:10px">${
       groupMatches.map(m => `<div class="card card-sm" style="padding:10px">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
-          <div style="display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600">${team(m.team1).flag} ${team(m.team1).name}</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600">${flagIcon(team(m.team1).id)} ${team(m.team1).name}</div>
           <div style="font-weight:800;font-size:.9rem">${m.status!=='UPCOMING'?(m.score1??0)+' – '+(m.score2??0):statusBadge(m.status)}</div>
-          <div style="display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600">${team(m.team2).name} ${team(m.team2).flag}</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600">${team(m.team2).name} ${flagIcon(team(m.team2).id)}</div>
         </div>
         <div style="font-size:.68rem;color:var(--text-m);margin-top:4px">${m.dateIST||m.date||''} · MD${m.matchday||''}</div>
       </div>`).join('')
@@ -1212,7 +1234,7 @@ function renderBracket(){
     if(!id) return null;
     const t = team(id);
     return `<div class="bracket-team${t.flag?' ':''}">
-      <span>${t.flag}</span>
+      <span>${flagIcon(t.id)}</span>
       <span style="flex:1">${t.name}</span>
       <span class="bracket-score">—</span>
     </div>`;
@@ -1267,7 +1289,7 @@ function renderPlayerStats(){
       <div class="stat-avatar">${initials(s.player)}</div>
       <div class="stat-info">
         <div class="stat-name">${s.player}</div>
-        <div class="stat-team">${t.flag} ${t.name}</div>
+        <div class="stat-team">${flagIcon(t.id)} ${t.name}</div>
         <div class="stat-club">${s.club||''}</div>
         <div class="stat-bar"><div class="stat-bar-fill" style="width:${Math.round(val/max*100)}%"></div></div>
       </div>
@@ -1334,12 +1356,12 @@ function renderCompare(){
   document.getElementById('compareResult').innerHTML = `<div class="compare-result">
     <div class="compare-header">
       <div class="compare-team-head">
-        <div class="compare-flag-lg">${s1.t.flag}</div>
+        <div class="compare-flag-lg">${flagIcon(s1.t.id, 'lg')}</div>
         <div class="compare-name">${s1.t.name}</div>
         <div style="font-size:.72rem;color:var(--text-m)">Group ${s1.t.group} · #${s1.t.fifaRanking||'?'} FIFA</div>
       </div>
       <div class="compare-team-head team2">
-        <div class="compare-flag-lg">${s2.t.flag}</div>
+        <div class="compare-flag-lg">${flagIcon(s2.t.id, 'lg')}</div>
         <div class="compare-name">${s2.t.name}</div>
         <div style="font-size:.72rem;color:var(--text-m)">Group ${s2.t.group} · #${s2.t.fifaRanking||'?'} FIFA</div>
       </div>
@@ -1433,9 +1455,9 @@ function renderInsights(){
       : '';
     return `<div class="prob-card">
       <div class="prob-teams">
-        <div class="prob-team">${t1.flag} ${t1.name}</div>
+        <div class="prob-team">${flagIcon(t1.id)} ${t1.name}</div>
         <div class="prob-date">${p.date||''}</div>
-        <div class="prob-team" style="flex-direction:row-reverse">${t2.name} ${t2.flag}</div>
+        <div class="prob-team" style="flex-direction:row-reverse">${t2.name} ${flagIcon(t2.id)}</div>
       </div>
       <div class="prob-bars">
         <div class="prob-bar-w" style="flex:${p.win1Pct}"></div>
@@ -1457,7 +1479,7 @@ function renderInsights(){
   document.getElementById('tourneyProbs').innerHTML = tp.map(p => {
     const t = team(p.team);
     return `<div class="tourney-team-row">
-      <span style="font-size:1.1rem">${t.flag}</span>
+      <span style="font-size:1.1rem">${flagIcon(t.id)}</span>
       <span style="font-size:.78rem;font-weight:600;min-width:90px">${t.name}</span>
       <div class="tourney-pct-bar">
         <div class="tourney-pct-fill" style="width:${Math.round(p.winPct/maxPct*100)}%"></div>
@@ -1507,7 +1529,7 @@ function renderPoll(){
       const pct = Math.round((count/total)*100);
       return `<div class="poll-option${userVote===id?' voted':''}" role="button" tabindex="0"
         onclick="castVote('${id}')" onkeydown="if(event.key==='Enter')castVote('${id}')">
-        <div class="poll-option-label">${t.flag} ${t.name}</div>
+        <div class="poll-option-label">${flagIcon(t.id)} ${t.name}</div>
         <div class="poll-bar"><div class="poll-bar-fill" style="width:${pct}%"></div></div>
         <div class="poll-pct">${pct}%</div>
       </div>`;
@@ -1532,7 +1554,7 @@ function initShareCard(){
     const t1=team(m.team1), t2=team(m.team2);
     const o=document.createElement('option');
     o.value=m.id;
-    o.textContent=`${t1.flag}${t1.name} vs ${t2.flag}${t2.name} (${m.dateIST||m.date||''})`;
+    o.textContent=`${flagIcon(t1.id)}${t1.name} vs ${flagIcon(t2.id)}${t2.name} (${m.dateIST||m.date||''})`;
     sel.appendChild(o);
   });
 }
@@ -1546,7 +1568,7 @@ window.generateShareCard = function(){
   document.getElementById('shareCardPreview').innerHTML = `
     <div class="share-card-preview">
       <div class="share-card-title">⚽ FIFA World Cup 2026</div>
-      <div class="share-card-teams">${t1.flag} ${t2.flag}</div>
+      <div class="share-card-teams">${flagIcon(t1.id)} ${flagIcon(t2.id)}</div>
       <div class="share-card-score">${t1.name} ${scoreText} ${t2.name}</div>
       <div class="share-card-meta">Group ${m.group||''} · ${m.dateIST||m.date||''} · ${venue(m.venue).name}</div>
       <div class="share-card-badge">🏆 WC2026 Fan Dashboard</div>
@@ -1565,7 +1587,7 @@ function renderFavBanner(){
   const nextM = (D.matches||[]).find(m => m.status==='UPCOMING' && (m.team1===favTeam||m.team2===favTeam));
   banner.classList.add('show');
   banner.innerHTML = `
-    <div class="fav-banner-flag">${t.flag}</div>
+    <div class="fav-banner-flag">${flagIcon(t.id)}</div>
     <div class="fav-banner-text">
       <div class="fav-banner-title">⭐ Your Team: ${t.name}</div>
       <div class="fav-banner-sub">
