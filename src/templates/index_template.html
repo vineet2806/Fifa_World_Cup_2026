@@ -964,11 +964,11 @@ function updateCountdown(){
   if(live){
     const t1 = team(live.team1), t2 = team(live.team2);
     document.getElementById('cdLabel').textContent = '🔴 LIVE NOW';
-    document.getElementById('cdMatchInfo').textContent = `${flagIcon(t1.id)} ${t1.name} vs ${flagIcon(t2.id)} ${t2.name}`;
+    document.getElementById('cdMatchInfo').innerHTML = `${flagIcon(t1.id)} ${t1.name} vs ${flagIcon(t2.id)} ${t2.name}`;
   } else if(nextUpcoming){
     document.getElementById('cdLabel').textContent = 'Next Match In';
     const t1 = team(nextUpcoming.m.team1), t2 = team(nextUpcoming.m.team2);
-    document.getElementById('cdMatchInfo').textContent =
+    document.getElementById('cdMatchInfo').innerHTML =
       `${flagIcon(t1.id)} ${t1.name} vs ${flagIcon(t2.id)} ${t2.name} · ${nextUpcoming.m.timeIST||''} IST`;
   } else {
     document.getElementById('cdLabel').textContent = 'Tournament Ongoing';
@@ -1588,7 +1588,7 @@ function initShareCard(){
     const t1=team(m.team1), t2=team(m.team2);
     const o=document.createElement('option');
     o.value=m.id;
-    o.textContent=`${flagIcon(t1.id)}${t1.name} vs ${flagIcon(t2.id)}${t2.name} (${m.dateIST||m.date||''})`;
+    o.innerHTML=`${flagIcon(t1.id)}${t1.name} vs ${flagIcon(t2.id)}${t2.name} (${m.dateIST||m.date||''})`;
     sel.appendChild(o);
   });
 }
