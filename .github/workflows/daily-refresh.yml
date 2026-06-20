@@ -26,17 +26,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ── 2. Set up Python ───────────────────────────────────────────────────
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      # ── 3. Install dependencies ────────────────────────────────────────────
+      # ── 2. Install dependencies (Python 3 pre-installed on ubuntu-latest) ──
       - name: Install Python dependencies
         run: |
-          pip install --upgrade pip
-          pip install requests beautifulsoup4
+          python3 --version
+          python3 -m pip install --upgrade pip
+          python3 -m pip install requests beautifulsoup4
 
       # ── 4. Clear cache if force refresh ───────────────────────────────────
       - name: Clear data cache (force refresh)
@@ -45,7 +40,7 @@ jobs:
 
       # ── 5. Run dashboard generator ─────────────────────────────────────────
       - name: Generate dashboard
-        run: python src/generate_dashboard.py
+        run: python3 src/generate_dashboard.py
         env:
           PYTHONUNBUFFERED: "1"
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
