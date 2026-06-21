@@ -49,7 +49,7 @@ Fifa_World_Cup_2026/
 │   └── build.log               ← Latest build log
 ├── .github/
 │   └── workflows/
-│       └── daily-refresh.yml   ← GitHub Actions (every 5 minutes)
+│       └── daily-refresh.yml   ← GitHub Actions (every 15 minutes)
 ├── staticwebapp.config.json    ← Azure Static Web Apps config
 └── README.md
 ```
