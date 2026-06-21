@@ -147,8 +147,9 @@ input,select{font-family:inherit}
 .scorers-banner-text{flex:1}
 .scorers-banner-title{font-size:.95rem;font-weight:800;background:linear-gradient(90deg,var(--gold),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .scorers-banner-sub{font-size:.72rem;color:var(--text-m);margin-top:2px}
-.fav-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:10px 14px;transition:all .2s}
-.fav-card:hover{background:var(--card-h);border-color:var(--border-h)}
+.fav-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:10px 14px;transition:transform .25s ease,box-shadow .25s ease,background .2s,border-color .2s;transform-origin:left center}
+.fav-card:hover{background:var(--card-h);border-color:var(--gold);transform:scale(1.03);box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.fav-card:hover .fav-elo-fill{filter:brightness(1.15)}
 .fav-rank{font-size:1.1rem;font-weight:900;color:var(--gold);width:24px;text-align:center}
 .fav-rank.r1{color:#fbbf24}.fav-rank.r2{color:#cbd5e1}.fav-rank.r3{color:#b45309}
 .fav-body{flex:1;min-width:0}
@@ -177,7 +178,11 @@ input,select{font-family:inherit}
 .stat-tip-lbl{font-size:.6rem;color:var(--text-d);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
 .stat-tip-val{font-size:.95rem;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
 .stat-tip-note{font-size:.7rem;color:var(--text-m);margin-top:8px;padding-top:6px;border-top:1px solid var(--border);font-style:italic}
-@media(max-width:600px){.stat-tip{width:220px}}
+.stat-tip-wide{width:360px}
+.stat-tip-body{display:flex;align-items:flex-start;gap:14px;margin-top:4px}
+.stat-tip-photo{width:88px;height:88px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--gold);box-shadow:0 4px 12px rgba(0,0,0,.35);background:linear-gradient(135deg,var(--blue),var(--gold))}
+.stat-tip-body .stat-tip-grid{flex:1;min-width:0}
+@media(max-width:600px){.stat-tip{width:220px}.stat-tip-wide{width:280px}.stat-tip-photo{width:64px;height:64px}}
 .hero-stats{display:flex;gap:24px;justify-content:center;margin-bottom:36px;flex-wrap:wrap}
 .hero-stat{text-align:center}
 .hero-stat-val{font-size:1.9rem;font-weight:800;color:var(--gold)}
@@ -1514,15 +1519,22 @@ function renderPlayerStats(){
 }
 
 function playerTipHTML(s, t){
-  return `<div class="stat-tip" role="tooltip">
+  const photo = PLAYER_PHOTOS[s.player];
+  const photoBlock = photo
+    ? `<img class="stat-tip-photo" src="${photo}" alt="${s.player}" onerror="this.remove()">`
+    : '';
+  return `<div class="stat-tip stat-tip-wide" role="tooltip">
     <div class="stat-tip-title">${t.flag} ${s.player}</div>
-    <div class="stat-tip-grid">
-      <div class="stat-tip-item"><span class="stat-tip-lbl">Goals</span><span class="stat-tip-val">⚽ ${s.goals??'—'}</span></div>
-      <div class="stat-tip-item"><span class="stat-tip-lbl">Assists</span><span class="stat-tip-val">🎯 ${s.assists??'—'}</span></div>
-      <div class="stat-tip-item"><span class="stat-tip-lbl">Caps</span><span class="stat-tip-val">👕 ${s.caps??'—'}</span></div>
-      <div class="stat-tip-item"><span class="stat-tip-lbl">WC Apps</span><span class="stat-tip-val">🌍 ${s.wcApps??'—'}</span></div>
-      <div class="stat-tip-item" style="grid-column:1/-1"><span class="stat-tip-lbl">Best WC Finish</span><span class="stat-tip-val" style="font-size:.82rem">🏆 ${s.bestWC||'—'}</span></div>
-      <div class="stat-tip-item" style="grid-column:1/-1"><span class="stat-tip-lbl">Club</span><span class="stat-tip-val" style="font-size:.82rem">🏟️ ${s.club||'—'}</span></div>
+    <div class="stat-tip-body">
+      ${photoBlock}
+      <div class="stat-tip-grid">
+        <div class="stat-tip-item"><span class="stat-tip-lbl">Goals</span><span class="stat-tip-val">⚽ ${s.goals??'—'}</span></div>
+        <div class="stat-tip-item"><span class="stat-tip-lbl">Assists</span><span class="stat-tip-val">🎯 ${s.assists??'—'}</span></div>
+        <div class="stat-tip-item"><span class="stat-tip-lbl">Caps</span><span class="stat-tip-val">👕 ${s.caps??'—'}</span></div>
+        <div class="stat-tip-item"><span class="stat-tip-lbl">WC Apps</span><span class="stat-tip-val">🌍 ${s.wcApps??'—'}</span></div>
+        <div class="stat-tip-item" style="grid-column:1/-1"><span class="stat-tip-lbl">Best WC Finish</span><span class="stat-tip-val" style="font-size:.82rem">🏆 ${s.bestWC||'—'}</span></div>
+        <div class="stat-tip-item" style="grid-column:1/-1"><span class="stat-tip-lbl">Club</span><span class="stat-tip-val" style="font-size:.82rem">🏟️ ${s.club||'—'}</span></div>
+      </div>
     </div>
     <div class="stat-tip-note">${s.why||''}</div>
   </div>`;
