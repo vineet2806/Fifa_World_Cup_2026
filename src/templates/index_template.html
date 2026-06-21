@@ -222,6 +222,7 @@ input,select{font-family:inherit}
 .ics-btn{padding:4px 10px;border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--text-m);font-size:.68rem;font-weight:600;cursor:pointer;transition:all .2s}
 .ics-btn:hover{border-color:var(--blue);color:var(--blue)}
 .live-min{font-size:.72rem;font-weight:700;color:var(--green);animation:pulse-live 2s infinite}
+.score-pending{font-size:.7rem;font-weight:600;color:var(--text-m);font-style:italic;margin-top:2px}
 .scorers-row{font-size:.7rem;color:var(--text-m);margin-top:8px;border-top:1px solid var(--border);padding-top:8px}
 
 /* ── SCHEDULE TABLE ── */
@@ -1110,13 +1111,16 @@ function matchCardHTML(m, size){
 
   let scoreHTML = '';
   if(m.status==='FT'||m.status==='HT'||m.status==='LIVE'){
-    const s1 = m.score1??0, s2 = m.score2??0;
+    const hasScore = m.score1 != null && m.score2 != null;
+    const s1 = hasScore ? m.score1 : '—';
+    const s2 = hasScore ? m.score2 : '—';
     scoreHTML = `<div class="match-score">
-      <div class="score-val ${m.status==='FT'&&s1>s2?'text-green':''}">${s1}</div>
+      <div class="score-val ${hasScore && m.status==='FT' && s1>s2 ? 'text-green' : ''}">${s1}</div>
       <div class="score-sep">–</div>
-      <div class="score-val ${m.status==='FT'&&s2>s1?'text-green':''}">${s2}</div>
+      <div class="score-val ${hasScore && m.status==='FT' && s2>s1 ? 'text-green' : ''}">${s2}</div>
     </div>`;
     if(m.status==='LIVE' && m.minute) scoreHTML += `<div class="live-min text-center">${m.minute}'</div>`;
+    if(!hasScore && m.status==='FT') scoreHTML += `<div class="score-pending text-center">Result pending</div>`;
   } else {
     scoreHTML = `<div class="score-upcoming">${m.timeIST||'TBD'} IST</div>`;
   }
@@ -1220,8 +1224,10 @@ function renderSchedule(){
     const tbody = document.getElementById('scheduleBody');
     tbody.innerHTML = ms.map(m => {
       const t1=team(m.team1), t2=team(m.team2), v=venue(m.venue);
-      const scoreCell = m.status==='FT'||m.status==='LIVE'||m.status==='HT'
-        ? `<td class="score-cell">${m.score1??0} – ${m.score2??0}</td>`
+      const scoreCell = (m.status==='FT'||m.status==='LIVE'||m.status==='HT')
+        ? (m.score1!=null && m.score2!=null
+            ? `<td class="score-cell">${m.score1} – ${m.score2}</td>`
+            : `<td class="score-cell" style="color:var(--text-d);font-style:italic">pending</td>`)
         : `<td class="score-cell" style="color:var(--text-d)">vs</td>`;
       const istDate = formatDateIST(m.dateUTC, m.timeIST);
       const localTimeLabel = m.timeLocalDisplay
@@ -1323,7 +1329,7 @@ function renderStandingsTable(){
       groupMatches.map(m => `<div class="card card-sm" style="padding:10px">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
           <div style="display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600">${flagIcon(team(m.team1).id)} ${team(m.team1).name}</div>
-          <div style="font-weight:800;font-size:.9rem">${m.status!=='UPCOMING'?(m.score1??0)+' – '+(m.score2??0):statusBadge(m.status)}</div>
+          <div style="font-weight:800;font-size:.9rem">${m.status!=='UPCOMING' ? (m.score1!=null && m.score2!=null ? m.score1+' – '+m.score2 : '— – —') : statusBadge(m.status)}</div>
           <div style="display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600">${team(m.team2).name} ${flagIcon(team(m.team2).id)}</div>
         </div>
         <div style="font-size:.68rem;color:var(--text-m);margin-top:4px">${m.dateIST||m.date||''} · MD${m.matchday||''}</div>
@@ -1811,7 +1817,7 @@ window.generateShareCard = function(){
   const m = (D.matches||[]).find(x=>x.id===id);
   if(!m){ return; }
   const t1=team(m.team1), t2=team(m.team2);
-  const scoreText = m.status!=='UPCOMING' ? `${m.score1??0} – ${m.score2??0}` : 'vs';
+  const scoreText = m.status!=='UPCOMING' ? (m.score1!=null && m.score2!=null ? `${m.score1} – ${m.score2}` : '— – —') : 'vs';
   document.getElementById('shareCardPreview').innerHTML = `
     <div class="share-card-preview">
       <div class="share-card-title">⚽ FIFA World Cup 2026</div>

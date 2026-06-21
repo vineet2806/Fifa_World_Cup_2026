@@ -45,21 +45,25 @@ OUTPUT_FILE = PUBLIC_DIR / "index.html"
 FALLBACK_FILE = DATA_DIR / "manual_fallbacks.json"
 LOG_FILE = DATA_DIR / "build.log"
 
-CACHE_TTL_HOURS = 6
+CACHE_TTL_HOURS = 6  # default for static fixture data
 
 # Public data sources - all CC0 / open data
+# `ttl_hours` overrides the default; live-score sources use a much shorter TTL
+# so scores update within minutes of FT, not hours.
 SOURCES = {
     "schedule": {
         "url": "https://raw.githubusercontent.com/mjwebmaster/world-cup-2026-schedule-data/main/world-cup-2026-schedule.json",
         "cache": "schedule.json",
         "name": "mjwebmaster/world-cup-2026-schedule-data",
-        "license": "public"
+        "license": "public",
+        "ttl_hours": 6,  # fixtures don't change
     },
     "openfootball": {
         "url": "https://raw.githubusercontent.com/openfootball/worldcup.json/master/2026/worldcup.json",
         "cache": "openfootball.json",
         "name": "openfootball/worldcup.json",
-        "license": "CC0"
+        "license": "CC0",
+        "ttl_hours": 0.15,  # ~9 min: live scores must stay current
     },
 }
 
@@ -152,9 +156,10 @@ def fetch_url(url: str, timeout: int = 15):
 def fetch_with_cache(key: str) -> dict | None:
     src = SOURCES[key]
     cache_path = CACHE_DIR / src["cache"]
+    ttl = src.get("ttl_hours", CACHE_TTL_HOURS)
 
-    if is_cache_fresh(cache_path):
-        log.info(f"Using cached {key}")
+    if is_cache_fresh(cache_path, ttl_hours=ttl):
+        log.info(f"Using cached {key} (ttl={ttl}h)")
         data = read_cache(cache_path)
         if data:
             return data
