@@ -237,9 +237,7 @@ input,select{font-family:inherit}
 .feed-age{font-size:.7rem;color:var(--text-m);margin-top:4px;font-variant-numeric:tabular-nums}
 .feed-age strong{color:var(--text-l);font-weight:600}
 @keyframes pulse-fresh{0%,100%{opacity:1}50%{opacity:.55}}
-.stale-banner{display:none;background:linear-gradient(90deg,#7a1d1d,#a52929);color:#fff;padding:10px 16px;text-align:center;font-size:.85rem;font-weight:600;border-bottom:2px solid #c0392b;position:sticky;top:0;z-index:100}
-.stale-banner.visible{display:block}
-.stale-banner small{font-weight:400;opacity:.85;margin-left:6px}
+
 
 /* Favourite-team picker modal */
 .fav-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:16px}
@@ -487,8 +485,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
 </head>
 <body>
 
-<!-- Stale-data warning — only visible when generatedAt is too old or a critical feed failed -->
-<div id="staleBanner" class="stale-banner" role="status" aria-live="polite"></div>
+
 
 
 <!-- NAV -->
@@ -2059,7 +2056,6 @@ function renderFooter(){
   }
 
   renderFeedFreshness();
-  updateStaleBanner();
 }
 
 // ── Per-source freshness panel + stale-data banner ────────────────────────────
@@ -2110,32 +2106,11 @@ function renderFeedFreshness(){
   }).join('');
 }
 
-function updateStaleBanner(){
-  const banner = document.getElementById('staleBanner');
-  if(!banner) return;
-  const m = D.meta || {};
-  const pageAge = _ageMinutes(m.generatedAt);
-  const feeds = m.feeds || [];
-  const failed = feeds.filter(f => f.status === 'failed');
-  const veryStale = feeds.filter(f => f.ttlMinutes && _ageMinutes(f.fetchedAt) > f.ttlMinutes * 3);
-  const PAGE_STALE_MIN = 60;
-
-  let msg = '';
-  if(failed.length){
-    msg = `⚠️ ${failed.length} live data source${failed.length>1?'s':''} failed to fetch — some fields may be missing or stale. <small>(${failed.map(f=>f.label||f.name).join(', ')})</small>`;
-  } else if(veryStale.length){
-    msg = `⚠️ Live data source "${veryStale.map(f=>f.label||f.name).join(', ')}" hasn't refreshed in over ${Math.round(veryStale[0].ttlMinutes*3)} min. Scores may not reflect the latest results. <small>Reload to retry.</small>`;
-  } else if(pageAge > PAGE_STALE_MIN){
-    msg = `⚠️ This page was last refreshed ${_fmtAge(pageAge)}. Scores may not reflect the latest results. <small>Reload to fetch the freshest deploy.</small>`;
-  }
-
-  if(msg){ banner.innerHTML = msg; banner.classList.add('visible'); }
-  else   { banner.classList.remove('visible'); banner.innerHTML = ''; }
-}
+function updateStaleBanner(){}
 
 // Tick freshness UI every 30s so ages and the banner stay accurate without reload.
 setInterval(function(){
-  try { renderFeedFreshness(); updateStaleBanner(); } catch(e){}
+  try { renderFeedFreshness(); } catch(e){}
 }, 30000);
 
 // ── Active nav on scroll ──────────────────────────────────────────────────────
