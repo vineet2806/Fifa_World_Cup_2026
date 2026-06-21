@@ -1344,7 +1344,7 @@ function renderGroupTabs(){
   if(groups.length) currentGroup = groups[0];
 }
 
-function switchGroup(g){
+window.switchGroup = function(g){
   currentGroup = g;
   document.querySelectorAll('.group-tab').forEach(el => {
     el.classList.toggle('active', el.id===`gtab-${g}`);
