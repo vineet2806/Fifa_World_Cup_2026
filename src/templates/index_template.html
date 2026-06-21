@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -1096,10 +1096,30 @@ document.getElementById('themeBtn').addEventListener('click', () => {
 initTheme();
 
 // ── Nav hamburger ────────────────────────────────────────────────────────────
-document.getElementById('hamburger').addEventListener('click', function(){
-  const links = document.querySelector('.nav-links');
-  const open = links.classList.toggle('open');
+const _hamburger = document.getElementById('hamburger');
+const _navLinks  = document.querySelector('.nav-links');
+
+function closeNav(){
+  _navLinks.classList.remove('open');
+  _hamburger.setAttribute('aria-expanded', 'false');
+}
+
+_hamburger.addEventListener('click', function(e){
+  e.stopPropagation();
+  const open = _navLinks.classList.toggle('open');
   this.setAttribute('aria-expanded', open);
+});
+
+// Close when tapping any nav link
+_navLinks.addEventListener('click', function(e){
+  if(e.target.classList.contains('nav-link')) closeNav();
+});
+
+// Close when tapping anywhere outside the nav
+document.addEventListener('click', function(e){
+  if(_navLinks.classList.contains('open') && !_navLinks.contains(e.target) && e.target !== _hamburger){
+    closeNav();
+  }
 });
 
 // ── Hero ─────────────────────────────────────────────────────────────────────
