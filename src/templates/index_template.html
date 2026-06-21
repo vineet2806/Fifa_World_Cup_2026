@@ -238,6 +238,28 @@ input,select{font-family:inherit}
 .stale-banner{display:none;background:linear-gradient(90deg,#7a1d1d,#a52929);color:#fff;padding:10px 16px;text-align:center;font-size:.85rem;font-weight:600;border-bottom:2px solid #c0392b;position:sticky;top:0;z-index:100}
 .stale-banner.visible{display:block}
 .stale-banner small{font-weight:400;opacity:.85;margin-left:6px}
+
+/* Favourite-team picker modal */
+.fav-modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:16px}
+.fav-modal.open{display:flex}
+.fav-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.fav-modal-card{position:relative;background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:0 20px 60px rgba(0,0,0,.5);width:100%;max-width:560px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+.fav-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border)}
+.fav-modal-title{margin:0;font-size:1.05rem;font-weight:800;color:var(--text-l)}
+.fav-modal-close{background:none;border:none;color:var(--text-m);font-size:1.6rem;line-height:1;cursor:pointer;padding:0 4px;border-radius:6px;transition:color .15s,background .15s}
+.fav-modal-close:hover{color:var(--text-l);background:var(--card-h)}
+.fav-modal-search{margin:14px 18px 8px;padding:10px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg);color:var(--text-l);font-size:.92rem;outline:none;transition:border-color .15s,box-shadow .15s}
+.fav-modal-search:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(251,191,36,.18)}
+.fav-modal-grid{flex:1;overflow-y:auto;padding:8px 14px 14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.fav-team-tile{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);cursor:pointer;text-align:left;color:var(--text-l);font-size:.85rem;transition:background .15s,border-color .15s,transform .15s}
+.fav-team-tile:hover{background:var(--card-h);border-color:var(--gold);transform:translateY(-1px)}
+.fav-team-tile.is-selected{border-color:var(--gold);background:var(--gold-d);box-shadow:inset 0 0 0 1px var(--gold)}
+.fav-team-tile img{width:24px;height:18px;object-fit:cover;border-radius:2px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.fav-team-tile .ft-name{font-weight:700;line-height:1.15;min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fav-team-tile .ft-code{font-size:.65rem;color:var(--text-m);font-weight:600;letter-spacing:.04em}
+.fav-modal-foot{display:flex;justify-content:space-between;gap:8px;padding:12px 18px;border-top:1px solid var(--border);background:var(--bg)}
+.fav-modal-empty{grid-column:1/-1;text-align:center;color:var(--text-m);padding:24px 8px;font-size:.85rem}
+@media(max-width:520px){.fav-modal-grid{grid-template-columns:repeat(2,1fr)}}
 .scorers-row{font-size:.7rem;color:var(--text-m);margin-top:8px;border-top:1px solid var(--border);padding-top:8px}
 
 /* ── SCHEDULE TABLE ── */
@@ -787,6 +809,23 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
     <div id="dataWarnings"></div>
   </div>
 </footer>
+
+<!-- Favourite-team picker modal -->
+<div id="favModal" class="fav-modal" role="dialog" aria-modal="true" aria-labelledby="favModalTitle" aria-hidden="true">
+  <div class="fav-modal-backdrop" data-close="1"></div>
+  <div class="fav-modal-card">
+    <div class="fav-modal-head">
+      <h3 id="favModalTitle" class="fav-modal-title">⭐ Pick your favourite team</h3>
+      <button class="fav-modal-close" aria-label="Close" data-close="1">&times;</button>
+    </div>
+    <input id="favModalSearch" class="fav-modal-search" type="search" placeholder="Search by team name or code…" autocomplete="off">
+    <div id="favModalGrid" class="fav-modal-grid" role="listbox" aria-label="Teams"></div>
+    <div class="fav-modal-foot">
+      <button id="favModalClear" class="btn btn-ghost" type="button">Clear selection</button>
+      <button class="btn btn-ghost" type="button" data-close="1">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════ EMBEDDED DATA ═══════════════════════════════ -->
 <script>
@@ -1891,20 +1930,72 @@ function renderFavBanner(){
 }
 
 function initFavTeamSelector(){
-  const btn = document.getElementById('favNavBtn');
-  btn.addEventListener('click', () => {
-    const teams = (D.teams||[]).sort((a,b)=>a.name.localeCompare(b.name));
-    const sel = prompt('Select your favourite team (enter team code):\n' +
-      teams.slice(0,24).map(t=>t.flag+' '+t.id+' ('+t.name+')').join('\n'));
-    if(sel && TEAMS[sel.toUpperCase()]){
-      favTeam = sel.toUpperCase();
-      localStorage.setItem('wc2026_fav', favTeam);
-      btn.classList.add('active');
-      btn.textContent = '⭐ ' + team(favTeam).name;
-      renderFavBanner();
-      renderToday();
-      renderSchedule();
+  const btn      = document.getElementById('favNavBtn');
+  const modal    = document.getElementById('favModal');
+  const grid     = document.getElementById('favModalGrid');
+  const search   = document.getElementById('favModalSearch');
+  const clearBtn = document.getElementById('favModalClear');
+
+  function renderTiles(q){
+    const ql = (q||'').trim().toLowerCase();
+    const teams = (D.teams||[]).slice().sort((a,b)=>a.name.localeCompare(b.name));
+    const matches = ql
+      ? teams.filter(t => t.name.toLowerCase().includes(ql) || t.id.toLowerCase().includes(ql))
+      : teams;
+    if(!matches.length){
+      grid.innerHTML = '<div class="fav-modal-empty">No teams match “' + escHtml(q) + '”.</div>';
+      return;
     }
+    grid.innerHTML = matches.map(t => `
+      <button type="button" class="fav-team-tile ${t.id===favTeam?'is-selected':''}" data-team="${t.id}" role="option" aria-selected="${t.id===favTeam}">
+        ${t.flag}
+        <span class="ft-name">${escHtml(t.name)}</span>
+        <span class="ft-code">${t.id}</span>
+      </button>
+    `).join('');
+  }
+
+  function openModal(){
+    renderTiles('');
+    search.value = '';
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+    document.body.style.overflow = 'hidden';
+    setTimeout(()=>search.focus(), 60);
+  }
+  function closeModal(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.body.style.overflow = '';
+  }
+  function pickTeam(id){
+    if(!id || !TEAMS[id]) return;
+    favTeam = id;
+    localStorage.setItem('wc2026_fav', favTeam);
+    btn.classList.add('active');
+    btn.textContent = '⭐ ' + team(favTeam).name;
+    renderFavBanner();
+    if(typeof renderToday    === 'function') renderToday();
+    if(typeof renderSchedule === 'function') renderSchedule();
+    closeModal();
+  }
+
+  btn.addEventListener('click', openModal);
+  modal.addEventListener('click', (e) => {
+    if(e.target.dataset && e.target.dataset.close) closeModal();
+    const tile = e.target.closest && e.target.closest('.fav-team-tile');
+    if(tile) pickTeam(tile.dataset.team);
+  });
+  search.addEventListener('input', () => renderTiles(search.value));
+  search.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){
+      const first = grid.querySelector('.fav-team-tile');
+      if(first) pickTeam(first.dataset.team);
+    }
+  });
+  clearBtn.addEventListener('click', () => { window.clearFav(); closeModal(); });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && modal.classList.contains('open')) closeModal();
   });
 
   if(favTeam){
@@ -1913,6 +2004,8 @@ function initFavTeamSelector(){
   }
   renderFavBanner();
 }
+
+function escHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 window.clearFav = function(){
   favTeam='';
