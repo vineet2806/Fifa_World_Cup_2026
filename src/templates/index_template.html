@@ -148,8 +148,10 @@ input,select{font-family:inherit}
 .scorers-banner-text{flex:1}
 .scorers-banner-title{font-size:.95rem;font-weight:800;background:linear-gradient(90deg,var(--gold),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .scorers-banner-sub{font-size:.72rem;color:var(--text-m);margin-top:2px}
-.fav-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:10px 14px;transition:transform .25s ease,box-shadow .25s ease,background .2s,border-color .2s;transform-origin:left center}
-.fav-card:hover{background:var(--card-h);border-color:var(--gold);transform:scale(1.03);box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.fav-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:10px 14px;transition:all .2s}
+.fav-card:hover{background:var(--card-h);border-color:var(--border-h);transform:translateX(2px)}
+.fav-flag{position:relative;width:42px;height:42px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;border:2px solid transparent;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:width .25s ease,height .25s ease,box-shadow .25s ease,border-color .25s ease}
+.fav-card:hover .fav-flag{width:64px;height:64px;border-color:var(--gold);box-shadow:0 6px 18px rgba(0,0,0,.4)}
 .fav-card:hover .fav-elo-fill{filter:brightness(1.15)}
 .fav-rank{font-size:1.1rem;font-weight:900;color:var(--gold);width:24px;text-align:center}
 .fav-rank.r1{color:#fbbf24}.fav-rank.r2{color:#cbd5e1}.fav-rank.r3{color:#b45309}
@@ -1587,8 +1589,9 @@ function renderPlayerStats(){
     const h = teamHonours(t.id);
     return `<div class="fav-card stat-tip-wrap" tabindex="0">
       <div class="fav-rank ${rankCls}">${i+1}</div>
+      <div class="fav-flag">${t.flag}</div>
       <div class="fav-body">
-        <div class="fav-name">${t.flag} ${t.name}</div>
+        <div class="fav-name">${t.name}</div>
         <div class="fav-sub">${t.confederation||''} · Group ${t.group||'?'} · Coach: ${t.coach||'—'}</div>
         <div class="fav-elo-bar"><div class="fav-elo-fill" style="width:${pct}%"></div></div>
       </div>
