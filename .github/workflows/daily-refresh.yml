@@ -39,6 +39,27 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install requests beautifulsoup4
 
+      # ── 3. Restore Groq narrative cache (persists LLM output across runs) ──
+      # Free data sources refresh every 5 min; AI narratives are reused for ~30 min
+      # so we stay well under the Groq free-tier rate limit.
+      # Key rotates every 30 min — each new bucket writes a fresh cache entry,
+      # intermediate runs restore the most recent prior bucket via restore-keys.
+      - name: Compute 30-min cache bucket
+        id: bucket
+        run: |
+          # Floor current UTC time to nearest 30-min window: YYYYMMDDHHM (M = 0 or 3)
+          BUCKET=$(date -u +'%Y%m%d%H')$(( $(date -u +'%M') / 30 * 3 ))
+          echo "value=${BUCKET}" >> "$GITHUB_OUTPUT"
+          echo "30-min bucket key: ${BUCKET}"
+
+      - name: Restore Groq narrative cache
+        uses: actions/cache@v4
+        with:
+          path: data/cache/groq_narratives.json
+          key: groq-narratives-${{ steps.bucket.outputs.value }}
+          restore-keys: |
+            groq-narratives-
+
       # ── 4. Clear cache if force refresh ───────────────────────────────────
       - name: Clear data cache (force refresh)
         if: ${{ github.event.inputs.force_refresh == 'true' }}

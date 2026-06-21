@@ -568,17 +568,32 @@ def validate_data(data: dict) -> list:
 
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_MODEL = "llama-3.1-8b-instant"
+GROQ_CACHE_TTL_MINUTES = 30  # AI insights refresh every 30 min to stay within Groq free tier
+GROQ_CACHE_FILE = CACHE_DIR / "groq_narratives.json"
 
 
 def fetch_groq_narratives(upcoming_matches: list, team_map: dict) -> dict:
     """
     Call Groq LLM to generate one-sentence match narrative insights.
     Returns a dict of {matchId: narrative_string}.
+    Cached for GROQ_CACHE_TTL_MINUTES so the 5-min workflow loop only hits
+    the LLM every ~30 min — free data sources still refresh every run.
     Only called when GROQ_API_KEY env var is set.
     """
     api_key = os.environ.get("GROQ_API_KEY", "")
     if not api_key or not HAS_REQUESTS or not upcoming_matches:
         return {}
+
+    # Serve from cache if fresh enough (and covers the current upcoming matches)
+    if GROQ_CACHE_FILE.exists():
+        age_min = (datetime.now().timestamp() - GROQ_CACHE_FILE.stat().st_mtime) / 60
+        if age_min < GROQ_CACHE_TTL_MINUTES:
+            cached = read_cache(GROQ_CACHE_FILE) or {}
+            cached_narratives = cached.get("narratives", {}) if isinstance(cached, dict) else {}
+            needed_ids = {m["id"] for m in upcoming_matches[:8]}
+            if needed_ids.issubset(set(cached_narratives.keys())):
+                log.info(f"Using cached Groq narratives (age {age_min:.1f} min, TTL {GROQ_CACHE_TTL_MINUTES} min)")
+                return cached_narratives
 
     lines = []
     for m in upcoming_matches[:8]:
@@ -615,9 +630,15 @@ def fetch_groq_narratives(upcoming_matches: list, team_map: dict) -> dict:
         if start >= 0 and end > start:
             narratives = json.loads(content[start:end])
             log.info(f"Groq narratives received for {len(narratives)} matches")
+            write_cache(GROQ_CACHE_FILE, {"narratives": narratives})
             return narratives
     except Exception as exc:
         log.warning(f"Groq API call failed (falling back to Elo only): {exc}")
+        # On failure, try stale cache so we don't lose narratives entirely
+        stale = read_cache(GROQ_CACHE_FILE) or {}
+        if isinstance(stale, dict) and stale.get("narratives"):
+            log.warning("Using stale Groq narratives cache after API failure")
+            return stale["narratives"]
     return {}
 
 
