@@ -65,6 +65,13 @@ SOURCES = {
         "license": "CC0",
         "ttl_hours": 0.15,  # ~9 min: live scores must stay current
     },
+    "espn": {
+        "url": "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard",
+        "cache": "espn.json",
+        "name": "ESPN Scoreboard",
+        "license": "public",
+        "ttl_hours": 0.033,  # ~2 min: real-time live scores
+    },
 }
 
 # Team name variations across public sources -> canonical fallback team IDs
@@ -90,6 +97,20 @@ TEAM_NAME_TO_ID = {
     "England": "ENG", "Denmark": "DEN", "Austria": "AUT", "Jordan": "JOR",
     "Colombia": "COL", "Croatia": "CRO", "Panama": "PAN", "Uzbekistan": "UZB",
     "DR Congo": "COD", "Congo DR": "COD", "Congo, DR": "COD", "Democratic Republic of the Congo": "COD",
+}
+
+# ESPN abbreviation -> canonical team ID (fallback when displayName lookup fails)
+ESPN_ABBR_TO_ID = {
+    "KSA": "KSA", "CPV": "CPV", "COD": "COD", "BIH": "BIH", "CIV": "CIV",
+    "NED": "NED", "GER": "GER", "POR": "POR", "FRA": "FRA", "ARG": "ARG",
+    "BRA": "BRA", "ENG": "ENG", "ESP": "ESP", "URU": "URU", "BEL": "BEL",
+    "JPN": "JPN", "USA": "USA", "MEX": "MEX", "MAR": "MAR", "SEN": "SEN",
+    "EGY": "EGY", "TUN": "TUN", "IRN": "IRN", "NZL": "NZL", "AUS": "AUS",
+    "KOR": "KOR", "QAT": "QAT", "RSA": "RSA", "CAN": "CAN", "CRO": "CRO",
+    "DEN": "DEN", "SWE": "SWE", "NOR": "NOR", "AUT": "AUT", "SUI": "SUI",
+    "COL": "COL", "ECU": "ECU", "PAR": "PAR", "ALG": "ALG", "GHA": "GHA",
+    "TUR": "TUR", "UZB": "UZB", "JOR": "JOR", "IRQ": "IRQ", "PAN": "PAN",
+    "CUW": "CUW", "SCO": "SCO", "HAI": "HAI", "CZE": "CZE",
 }
 
 # IST = UTC+5:30
@@ -361,6 +382,53 @@ def normalize_openfootball_data(raw: dict) -> list:
     return matches
 
 
+def normalize_espn_data(raw: dict) -> list:
+    """Parse ESPN scoreboard API into canonical match dicts with live scores.
+
+    Uses status.type.state ('pre'/'in'/'post') — reliable across all match phases.
+    """
+    matches = []
+    for event in raw.get("events", []):
+        try:
+            comp = event.get("competitions", [{}])[0]
+            date_str = comp.get("date", "")
+            if not date_str:
+                continue
+            date = date_str[:10]
+            time_utc = date_str[11:16] if len(date_str) > 15 else ""
+            competitors = comp.get("competitors", [])
+            home = next((c for c in competitors if c.get("homeAway") == "home"), None)
+            away = next((c for c in competitors if c.get("homeAway") == "away"), None)
+            if not home or not away:
+                continue
+            home_name = home.get("team", {}).get("displayName", "")
+            away_name = away.get("team", {}).get("displayName", "")
+            home_abbr = home.get("team", {}).get("abbreviation", "")
+            away_abbr = away.get("team", {}).get("abbreviation", "")
+            team1 = _team_name_to_id(home_name) or ESPN_ABBR_TO_ID.get(home_abbr, home_abbr)
+            team2 = _team_name_to_id(away_name) or ESPN_ABBR_TO_ID.get(away_abbr, away_abbr)
+            if not team1 or not team2:
+                continue
+            state = comp.get("status", {}).get("type", {}).get("state", "pre")
+            score_home = home.get("score")
+            score_away = away.get("score")
+            if state == "post" and score_home is not None:
+                score1, score2, status = int(score_home), int(score_away), "FT"
+            elif state == "in" and score_home is not None:
+                score1, score2, status = int(score_home), int(score_away), "LIVE"
+            else:
+                score1, score2, status = None, None, "UPCOMING"
+            matches.append({
+                "id": hashlib.md5(f"{date}_{team1}_{team2}".encode()).hexdigest()[:8],
+                "group": "", "matchday": 1, "date": date, "timeUTC": time_utc,
+                "team1": team1, "team2": team2, "score1": score1, "score2": score2,
+                "status": status, "venue": "", "city": "", "timeOffset": "", "timeLocal": "",
+            })
+        except Exception:
+            continue
+    return matches
+
+
 def _venue_name_to_id(name: str, venues: list) -> str:
     """Map a venue/stadium name from public sources to our canonical venue ID."""
     if not name:
@@ -480,16 +548,22 @@ def merge_matches(fallback_matches: list, fetched_matches: list) -> list:
     for m in fallback_matches:
         key = _key(m)
         fm = fetched_by_key.get(key)
+        reversed_key = False
         if not fm:
-            # Try reversed home/away alignment
             rev_key = (key[0], key[2], key[1])
             fm = fetched_by_key.get(rev_key)
+            if fm:
+                reversed_key = True
         if fm:
             m = dict(m)
             # Update scores if fetched data has them
             if fm.get("score1") is not None:
-                m["score1"] = fm["score1"]
-                m["score2"] = fm["score2"]
+                if reversed_key:
+                    m["score1"] = fm["score2"]
+                    m["score2"] = fm["score1"]
+                else:
+                    m["score1"] = fm["score1"]
+                    m["score2"] = fm["score2"]
                 m["status"] = fm.get("status", "FT")
             # Overlay local timezone offset and local kickoff time from live source when available.
             # Schedule source stores ET; openfootball stores actual local offset.
@@ -781,6 +855,7 @@ def collect_data() -> dict:
 
     schedule_matches = []
     openfootball_matches = []
+    espn_matches = []
 
     if HAS_REQUESTS:
         schedule_raw = fetch_with_cache("schedule")
@@ -797,7 +872,15 @@ def collect_data() -> dict:
             warnings.append("Match results fetched from openfootball/worldcup.json (CC0)")
             fetched_matches.extend(openfootball_matches)
 
-        if not schedule_matches and not openfootball_matches:
+        espn_raw = fetch_with_cache("espn")
+        if espn_raw:
+            espn_matches = normalize_espn_data(espn_raw)
+            live = sum(1 for m in espn_matches if m["status"] in ("LIVE", "FT"))
+            log.info(f"ESPN data: {len(espn_matches)} matches ({live} with scores)")
+            warnings.append("Live scores from ESPN scoreboard API (public)")
+            fetched_matches.extend(espn_matches)
+
+        if not schedule_matches and not openfootball_matches and not espn_matches:
             warnings.append("All HTTP fetches failed — using manual fallback data only")
     else:
         warnings.append("requests library not installed — using manual fallback data only")
@@ -810,6 +893,9 @@ def collect_data() -> dict:
         matches = merge_matches(matches, openfootball_matches)
     if schedule_matches:
         matches = merge_matches(matches, schedule_matches)
+    # ESPN merged last — real-time scores override community sources during match hours
+    if espn_matches:
+        matches = merge_matches(matches, espn_matches)
 
     # Ensure every match uses a canonical venue ID the frontend understands.
     matches = _normalize_venue_ids(matches, fallback.get("venues", []))
@@ -834,7 +920,8 @@ def collect_data() -> dict:
     feeds = []
     for k, label, role in [
         ("schedule",    "Fixtures (mjwebmaster)",     "Match schedule, kickoff times, venues"),
-        ("openfootball","Live scores (openfootball)", "Scores, goal scorers, full-time results"),
+        ("openfootball","Scores (openfootball)",      "Scores, goal scorers, full-time results"),
+        ("espn",        "Live scores (ESPN)",          "Real-time scores, in-progress match status"),
     ]:
         meta = SOURCE_META.get(k)
         if meta:
