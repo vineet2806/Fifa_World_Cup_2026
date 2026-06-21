@@ -153,29 +153,54 @@ def fetch_url(url: str, timeout: int = 15):
         return None
 
 
+# Per-source freshness metadata, populated as fetches happen.
+# Read by the template to render the visible Data Freshness panel.
+SOURCE_META: dict = {}
+
+
+def _record_source_meta(key: str, status: str, fetched_at: str, src: dict):
+    SOURCE_META[key] = {
+        "key": key,
+        "name": src.get("name", key),
+        "url": src.get("url", ""),
+        "license": src.get("license", ""),
+        "status": status,  # "live" | "cached" | "stale" | "failed"
+        "fetchedAt": fetched_at,
+        "ttlMinutes": int(round(src.get("ttl_hours", CACHE_TTL_HOURS) * 60)),
+    }
+
+
 def fetch_with_cache(key: str) -> dict | None:
     src = SOURCES[key]
     cache_path = CACHE_DIR / src["cache"]
     ttl = src.get("ttl_hours", CACHE_TTL_HOURS)
+    cache_mtime_iso = (
+        datetime.fromtimestamp(cache_path.stat().st_mtime, tz=IST).isoformat()
+        if cache_path.exists() else ""
+    )
 
     if is_cache_fresh(cache_path, ttl_hours=ttl):
         log.info(f"Using cached {key} (ttl={ttl}h)")
         data = read_cache(cache_path)
         if data:
+            _record_source_meta(key, "cached", cache_mtime_iso, src)
             return data
 
     log.info(f"Fetching {key} from {src['url']}")
     data = fetch_url(src["url"])
     if data:
         write_cache(cache_path, data)
+        _record_source_meta(key, "live", datetime.now(tz=IST).isoformat(), src)
         return data
 
     # Try stale cache as last resort
     stale = read_cache(cache_path)
     if stale:
         log.warning(f"Using stale cache for {key}")
+        _record_source_meta(key, "stale", cache_mtime_iso, src)
         return stale
 
+    _record_source_meta(key, "failed", "", src)
     return None
 
 
@@ -805,12 +830,34 @@ def collect_data() -> dict:
 
     now_ist = datetime.now(IST)
 
+    # Build the per-source freshness panel. Order matters — most user-relevant first.
+    feeds = []
+    for k, label, role in [
+        ("schedule",    "Fixtures (mjwebmaster)",     "Match schedule, kickoff times, venues"),
+        ("openfootball","Live scores (openfootball)", "Scores, goal scorers, full-time results"),
+    ]:
+        meta = SOURCE_META.get(k)
+        if meta:
+            feeds.append({**meta, "label": label, "role": role})
+    # Groq narrative cache freshness, if a cache file exists.
+    if GROQ_CACHE_FILE.exists():
+        groq_mtime = datetime.fromtimestamp(GROQ_CACHE_FILE.stat().st_mtime, tz=IST).isoformat()
+        feeds.append({
+            "key": "groq", "label": "AI narratives (Groq Llama-3.1)",
+            "role": "One-line match storylines via LLM",
+            "name": "Groq llama-3.1-8b-instant", "url": "https://groq.com",
+            "license": "API",
+            "status": "cached", "fetchedAt": groq_mtime,
+            "ttlMinutes": GROQ_CACHE_TTL_MINUTES,
+        })
+
     data = {
         "meta": {
             "generatedAt": now_ist.isoformat(),
             "generatedAtUTC": datetime.now(timezone.utc).isoformat(),
             "timezone": "Asia/Kolkata",
             "sources": fallback.get("meta", {}).get("sources", []),
+            "feeds": feeds,
             "dataQualityWarnings": warnings,
             "isLiveData": bool(fetched_matches),
         },
