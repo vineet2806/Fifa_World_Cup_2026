@@ -52,25 +52,35 @@ function Test-MatchHour {
     }
 }
 
-# How many minutes since we last completed a refresh?
-function Get-MinutesSinceRefresh {
-    if (-not (Test-Path $logFile)) { return 9999 }
+# Start of the current clock slot (5-min during match, 30-min otherwise)
+function Get-SlotStart([bool]$matchHour) {
+    $intervalMin = if ($matchHour) { 5 } else { 30 }
+    $now = [DateTime]::Now
+    $slotMinute = [math]::Floor($now.Minute / $intervalMin) * $intervalMin
+    return [DateTime]::new($now.Year, $now.Month, $now.Day, $now.Hour, $slotMinute, 0)
+}
+
+# When did we last complete a refresh?
+function Get-LastRefreshTime {
+    if (-not (Test-Path $logFile)) { return [DateTime]::MinValue }
     $last = Get-Content $logFile | Where-Object { $_ -match 'refresh complete' } | Select-Object -Last 1
-    if (-not $last) { return 9999 }
+    if (-not $last) { return [DateTime]::MinValue }
     if ($last -match '^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})') {
-        $ts = [DateTime]::ParseExact($Matches[1], 'yyyy-MM-dd HH:mm:ss', $null)
-        return ([DateTime]::Now - $ts).TotalMinutes
+        return [DateTime]::ParseExact($Matches[1], 'yyyy-MM-dd HH:mm:ss', $null)
     }
-    return 9999
+    return [DateTime]::MinValue
 }
 
 # Decide: refresh now or skip?
-$matchHour    = Test-MatchHour
-$minSinceLast = Get-MinutesSinceRefresh
+$matchHour   = Test-MatchHour
+$intervalMin = if ($matchHour) { 5 } else { 30 }
+$slotStart   = Get-SlotStart $matchHour
+$lastRefresh = Get-LastRefreshTime
 
-if (-not $matchHour -and $minSinceLast -lt $SLOW_MIN) {
-    $waitMin = [math]::Ceiling($SLOW_MIN - $minSinceLast)
-    Log "skip: no match active, refreshed $([math]::Floor($minSinceLast))m ago -- next in ~$waitMin min"
+if ($lastRefresh -ge $slotStart) {
+    $nextSlot = $slotStart.AddMinutes($intervalMin)
+    $waitMin  = [math]::Ceiling(($nextSlot - [DateTime]::Now).TotalMinutes)
+    Log "skip: refreshed at $($lastRefresh.ToString('HH:mm')) -- next slot $($nextSlot.ToString('HH:mm')) (~$waitMin min)"
     exit 0
 }
 
