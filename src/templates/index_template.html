@@ -593,6 +593,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
     <div class="filter-bar">
       <input id="schedSearch" class="input" placeholder="🔍 Search team or city…" style="min-width:180px" aria-label="Search schedule">
       <select id="schedGroup" class="select" aria-label="Filter by group"><option value="">All Groups</option></select>
+      <select id="schedDate" class="select" aria-label="Filter by date"><option value="">All Dates</option></select>
       <select id="schedStatus" class="select" aria-label="Filter by status">
         <option value="">All Matches</option>
         <option value="LIVE">🔴 Live</option>
@@ -1284,26 +1285,51 @@ function initScheduleFilters(){
     const o=document.createElement('option'); o.value=t.id; o.textContent=t.id+' · '+t.name; tSel.appendChild(o);
   });
 
-  ['schedSearch','schedGroup','schedStatus','schedTeam'].forEach(id =>
+  // Populate date dropdown — "Today" shortcut + each unique IST match date
+  const dSel = document.getElementById('schedDate');
+  const today = todayIST();
+  const hasTodayMatch = (D.matches||[]).some(m => (m.dateIST||m.date) === today);
+  if(hasTodayMatch){
+    const o=document.createElement('option'); o.value='__today__'; o.textContent='📅 Today'; dSel.appendChild(o);
+  }
+  const uniqueDates = [...new Set((D.matches||[]).map(m=>m.dateIST||m.date).filter(Boolean))].sort();
+  uniqueDates.forEach(d => {
+    const o=document.createElement('option'); o.value=d;
+    o.textContent=new Date(d+'T12:00:00Z').toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
+    dSel.appendChild(o);
+  });
+
+  ['schedSearch','schedDate','schedGroup','schedStatus','schedTeam'].forEach(id =>
     document.getElementById(id).addEventListener('input', renderSchedule));
   document.getElementById('schedReset').addEventListener('click', () => {
-    ['schedSearch','schedGroup','schedStatus','schedTeam'].forEach(id => document.getElementById(id).value='');
+    ['schedSearch','schedDate','schedGroup','schedStatus','schedTeam'].forEach(id => document.getElementById(id).value='');
     renderSchedule();
   });
 }
 
 function getFilteredMatches(){
   const q = document.getElementById('schedSearch').value.toLowerCase();
+  const dateVal = document.getElementById('schedDate').value;
   const g = document.getElementById('schedGroup').value;
   const st = document.getElementById('schedStatus').value;
   const tid = document.getElementById('schedTeam').value;
+  const today = todayIST();
   return (D.matches||[]).filter(m => {
     const t1 = team(m.team1), t2 = team(m.team2), v = venue(m.venue);
     if(q && !`${t1.name} ${t2.name} ${v.city} ${v.name}`.toLowerCase().includes(q)) return false;
+    if(dateVal){
+      const mDate = m.dateIST || m.date;
+      if(dateVal === '__today__' && mDate !== today) return false;
+      if(dateVal !== '__today__' && mDate !== dateVal) return false;
+    }
     if(g && m.group!==g) return false;
     if(st && m.status!==st) return false;
     if(tid && m.team1!==tid && m.team2!==tid) return false;
     return true;
+  }).sort((a,b) => {
+    const da = (a.dateIST||a.date||'') + (a.timeIST||a.timeUTC||'');
+    const db = (b.dateIST||b.date||'') + (b.timeIST||b.timeUTC||'');
+    return da.localeCompare(db);
   });
 }
 
@@ -1326,7 +1352,7 @@ function renderSchedule(){
             ? `<td class="score-cell">${m.score1} – ${m.score2}</td>`
             : `<td class="score-cell" style="color:var(--text-d);font-style:italic">pending</td>`)
         : `<td class="score-cell" style="color:var(--text-d)">vs</td>`;
-      const istDate = formatDateIST(m.dateUTC, m.timeIST);
+      const istDate = formatDateIST(m.dateIST || m.dateUTC, m.timeIST);
       const localTimeLabel = m.timeLocalDisplay
         ? `<span style="color:var(--text-d);font-size:.68rem;display:block;margin-top:2px">${m.localDate||m.date} · ${m.timeLocalDisplay} ${m.timeOffset||''}</span>`
         : '';
