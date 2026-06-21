@@ -4,8 +4,10 @@ on:
   push:
     branches: [main]
   schedule:
-    # Every 5 minutes. GitHub scheduled workflows may run with some delay.
-    - cron: "*/5 * * * *"
+    # Every 15 minutes. GitHub free-tier scheduled workflows are best-effort
+    # and routinely skip sub-15-min crons during peak load — 15 min is the
+    # smallest interval the scheduler honors reliably.
+    - cron: "*/15 * * * *"
   workflow_dispatch:
     inputs:
       force_refresh:
