@@ -418,11 +418,20 @@ def normalize_espn_data(raw: dict) -> list:
                 score1, score2, status = int(score_home), int(score_away), "LIVE"
             else:
                 score1, score2, status = None, None, "UPCOMING"
+            espn_minute = None
+            if state == "in":
+                display_clock = comp.get("status", {}).get("displayClock", "")
+                if display_clock:
+                    try:
+                        espn_minute = int(display_clock.split(':')[0].split('+')[0])
+                    except Exception:
+                        pass
             matches.append({
                 "id": hashlib.md5(f"{date}_{team1}_{team2}".encode()).hexdigest()[:8],
                 "group": "", "matchday": 1, "date": date, "timeUTC": time_utc,
                 "team1": team1, "team2": team2, "score1": score1, "score2": score2,
                 "status": status, "venue": "", "city": "", "timeOffset": "", "timeLocal": "",
+                "espnMinute": espn_minute,
             })
         except Exception:
             continue
@@ -571,6 +580,8 @@ def merge_matches(fallback_matches: list, fetched_matches: list) -> list:
                 m["timeOffset"] = fm["timeOffset"]
             if fm.get("timeLocal"):
                 m["timeLocal"] = fm["timeLocal"]
+            if fm.get("espnMinute") is not None:
+                m["espnMinute"] = fm["espnMinute"]
         merged.append(m)
     return merged
 

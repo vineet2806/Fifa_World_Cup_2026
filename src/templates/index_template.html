@@ -920,6 +920,9 @@ function recomputeMatchStatuses(){
       // Only auto-mark FT if no real score exists; otherwise leave FT data intact
       if(m.status !== 'FT'){ m.status = 'FT'; m.minute = null; }
     }
+    // ESPN's real-time clock is more accurate than wall-clock estimation
+    // (accounts for late kick-offs, extended first halves, etc.)
+    if(m.status === 'LIVE' && m.espnMinute != null){ m.minute = m.espnMinute; }
   });
 }
 recomputeMatchStatuses();
