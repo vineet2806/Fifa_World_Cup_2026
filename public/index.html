@@ -160,7 +160,10 @@ input,select{font-family:inherit}
 .fav-elo-val{font-size:.85rem;font-weight:800;color:var(--blue);min-width:48px;text-align:right}
 .star-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:10px 14px;transition:all .2s}
 .star-card:hover{background:var(--card-h);border-color:var(--border-h);transform:translateX(2px)}
-.star-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:#fff;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.star-avatar{position:relative;width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85rem;color:#fff;flex-shrink:0;box-shadow:0 2px 6px rgba(0,0,0,.2);overflow:hidden;transition:width .25s ease,height .25s ease,box-shadow .25s ease,border-color .25s ease;border:2px solid transparent}
+.star-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;transition:transform .25s ease}
+.star-card:hover .star-avatar{width:72px;height:72px;border-color:var(--gold);box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.star-card:hover .star-photo{transform:scale(1.08)}
 .star-body{flex:1;min-width:0}
 .star-name{font-size:.92rem;font-weight:700}
 .star-meta{font-size:.7rem;color:var(--text-m);margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
@@ -1357,6 +1360,37 @@ function renderBracket(){
 }
 
 // ── Stars & Favourites ────────────────────────────────────────────────────────
+// Public-domain player photos (Wikipedia thumbnails). If a URL fails to load,
+// the gradient avatar with the player's initials is shown instead.
+const PLAYER_PHOTOS = {
+  'Lionel Messi':       'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Lionel_Messi_WC2022.jpg/160px-Lionel_Messi_WC2022.jpg',
+  'Kylian Mbappé':      'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Kylian_Mbapp%C3%A9_2019.jpg/160px-Kylian_Mbapp%C3%A9_2019.jpg',
+  'Jude Bellingham':    'https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Jude_Bellingham_2023.jpg/160px-Jude_Bellingham_2023.jpg',
+  'Vinícius Júnior':    'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Vin%C3%ADcius_J%C3%BAnior_2018.jpg/160px-Vin%C3%ADcius_J%C3%BAnior_2018.jpg',
+  'Rodri':              'https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Rodri_2018.jpg/160px-Rodri_2018.jpg',
+  'Lamine Yamal':       'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Lamine_Yamal_2024_%28cropped%29.jpg/160px-Lamine_Yamal_2024_%28cropped%29.jpg',
+  'Lautaro Martínez':   'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Lautaro_Mart%C3%ADnez_2018.jpg/160px-Lautaro_Mart%C3%ADnez_2018.jpg',
+  'Cristiano Ronaldo':  'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Cristiano_Ronaldo_2018.jpg/160px-Cristiano_Ronaldo_2018.jpg',
+  'Florian Wirtz':      'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Florian_Wirtz_2023.jpg/160px-Florian_Wirtz_2023.jpg',
+  'Bukayo Saka':        'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Bukayo_Saka_2023.jpg/160px-Bukayo_Saka_2023.jpg',
+  'Erling Haaland':     'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Erling_Haaland_2023_%28cropped%29.jpg/160px-Erling_Haaland_2023_%28cropped%29.jpg',
+  'Kevin De Bruyne':    'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Kevin_De_Bruyne_2018.jpg/160px-Kevin_De_Bruyne_2018.jpg',
+  'Bruno Fernandes':    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Bruno_Fernandes_2018.jpg/160px-Bruno_Fernandes_2018.jpg',
+  'Toni Kroos':         'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Toni_Kroos_2017.jpg/160px-Toni_Kroos_2017.jpg',
+  'Luka Modrić':        'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Luka_Modri%C4%87_2018.jpg/160px-Luka_Modri%C4%87_2018.jpg',
+  'Phil Foden':         'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Phil_Foden_2023.jpg/160px-Phil_Foden_2023.jpg',
+  'Bernardo Silva':     'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Bernardo_Silva_2018.jpg/160px-Bernardo_Silva_2018.jpg',
+  'Frenkie de Jong':    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Frenkie_de_Jong_2019.jpg/160px-Frenkie_de_Jong_2019.jpg',
+  'Pedri':              'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Pedri_2021.jpg/160px-Pedri_2021.jpg',
+  'Jamal Musiala':      'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Jamal_Musiala_2022.jpg/160px-Jamal_Musiala_2022.jpg',
+  'Nicolò Barella':     'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Nicol%C3%B2_Barella_2018.jpg/160px-Nicol%C3%B2_Barella_2018.jpg',
+};
+function playerPhotoHTML(name, initials){
+  const url = PLAYER_PHOTOS[name];
+  if(!url) return '';
+  return `<img class="star-photo" src="${url}" alt="${name}" loading="lazy" onerror="this.remove()">`;
+}
+
 // Career stats: caps · goals · assists · WC apps · best WC finish · club
 const KEY_CONTRIBUTORS = [
   {player:'Kevin De Bruyne',  team:'BEL', pos:'MF', role:'Playmaker',     club:'Napoli',         caps:115, goals:30, assists:55, wcApps:2, bestWC:'QF (2018)', why:'Elite chance creator. Pinpoint long passes.'},
@@ -1444,7 +1478,7 @@ function renderPlayerStats(){
   document.getElementById('starsToWatch').innerHTML = stars.map(s => {
     const t = team(s.team);
     return `<div class="star-card stat-tip-wrap" tabindex="0">
-      <div class="star-avatar">${initials(s.player)}</div>
+      <div class="star-avatar"><span class="star-initials">${initials(s.player)}</span>${playerPhotoHTML(s.player)}</div>
       <div class="star-body">
         <div class="star-name">${s.player}</div>
         <div class="star-meta"><span class="star-pos">${s.pos}</span>${t.flag} ${t.name} — ${s.why}</div>
@@ -1458,7 +1492,7 @@ function renderPlayerStats(){
   document.getElementById('keyContributors').innerHTML = contribs.map(s => {
     const t = team(s.team);
     return `<div class="star-card stat-tip-wrap" tabindex="0">
-      <div class="star-avatar" style="background:linear-gradient(135deg,#a855f7,#ec4899)">${initials(s.player)}</div>
+      <div class="star-avatar" style="background:linear-gradient(135deg,#a855f7,#ec4899)"><span class="star-initials">${initials(s.player)}</span>${playerPhotoHTML(s.player)}</div>
       <div class="star-body">
         <div class="star-name">${s.player}</div>
         <div class="star-meta"><span class="star-pos" style="background:rgba(168,85,247,.15);color:#c4b5fd">${s.role}</span>${t.flag} ${t.name} — ${s.why}</div>
