@@ -854,8 +854,22 @@ function recomputeMatchStatuses(){
   });
 }
 recomputeMatchStatuses();
-// Re-evaluate every 30 seconds so the LIVE minute ticks up on screen
-setInterval(function(){ recomputeMatchStatuses(); if(typeof renderToday==='function') renderToday(); }, 30000);
+// Re-evaluate every 30 seconds so the LIVE minute ticks up on screen,
+// independently of the 15-min data refresh. Re-render every surface that
+// shows match status: Today, Schedule grid, Hero countdown, Bracket.
+function tickLiveClock(){
+  recomputeMatchStatuses();
+  if(typeof renderToday    === 'function') try { renderToday();    } catch(e){}
+  if(typeof renderSchedule === 'function') try { renderSchedule(); } catch(e){}
+  if(typeof renderHero     === 'function') try { renderHero();     } catch(e){}
+  if(typeof renderBracket  === 'function') try { renderBracket();  } catch(e){}
+}
+setInterval(tickLiveClock, 30000);
+// Also tick immediately when the tab regains focus — if the user came back
+// after a long idle, the displayed minute would otherwise be stale.
+document.addEventListener('visibilitychange', function(){
+  if(!document.hidden) tickLiveClock();
+});
 
 // Enrich every match with IST and local-display fields
 function enrichMatchTimes(){
