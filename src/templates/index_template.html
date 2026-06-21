@@ -492,6 +492,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
     <div id="navClock" style="display:flex;flex-direction:column;align-items:flex-end;line-height:1.2;margin-right:4px">
       <span id="navClockTime" style="font-size:.95rem;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.02em"></span>
       <span id="navClockDate" class="nav-clock-date"></span>
+      <span id="navRefreshedAt" style="font-size:.6rem;font-weight:500;color:var(--text-m);margin-top:2px;font-variant-numeric:tabular-nums;letter-spacing:.02em"></span>
     </div>
     <button id="favNavBtn" class="fav-btn" title="Select favourite team">⭐ My Team</button>
     <button id="themeBtn" class="theme-btn" aria-label="Toggle dark/light mode" title="Toggle theme">🌙</button>
@@ -1075,6 +1076,16 @@ function updateNavClock(){
   const dateStr = now.toLocaleDateString('en-IN', {timeZone:'Asia/Kolkata', weekday:'short', day:'numeric', month:'short', year:'numeric'});
   document.getElementById('navClockTime').textContent = timeStr + ' IST';
   document.getElementById('navClockDate').textContent = dateStr;
+
+  const refEl = document.getElementById('navRefreshedAt');
+  const gen = D && D.meta && D.meta.generatedAt;
+  if(refEl && gen){
+    const d = new Date(gen);
+    if(!isNaN(d)){
+      const r = d.toLocaleString('en-IN', {timeZone:'Asia/Kolkata', day:'numeric', month:'short', hour:'2-digit', minute:'2-digit', hour12:false});
+      refEl.textContent = `Data refreshed at ${r} IST`;
+    }
+  }
 }
 setInterval(updateNavClock, 1000);
 updateNavClock();
