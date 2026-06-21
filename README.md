@@ -1,6 +1,6 @@
 # ⚽ FIFA World Cup 2026 — Fan Dashboard
 
-An unofficial, fully automated, self-contained fan dashboard for the FIFA World Cup 2026, hosted on Azure Static Web Apps and rebuilt every **5 minutes**.
+An unofficial, fully automated, self-contained fan dashboard for the FIFA World Cup 2026, hosted on Azure Static Web Apps and refreshed every **15 minutes**.
 
 > **Disclaimer:** This is an unofficial fan project. FIFA, World Cup, and related marks are property of FIFA. This site is not affiliated with or endorsed by FIFA.
 

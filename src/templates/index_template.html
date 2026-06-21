@@ -735,7 +735,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
   <div class="footer-grid">
     <div>
       <div class="footer-logo">⚽ WC2026 Fan Dashboard</div>
-      <p class="footer-desc">An unofficial fan dashboard for the FIFA World Cup 2026. The page rebuilds every 15 minutes via GitHub Actions. Not affiliated with FIFA.</p>
+      <p class="footer-desc">An unofficial fan dashboard for the FIFA World Cup 2026. The page refreshes every 15 minutes via GitHub Actions. Not affiliated with FIFA.</p>
     </div>
     <div>
       <div class="footer-heading">Data Sources</div>
@@ -746,7 +746,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px 20p
     </div>
     <div>
       <div class="footer-heading">About</div>
-      <p id="refreshStatus" class="footer-desc" style="margin-top:8px">Rebuilt automatically every 15 minutes via GitHub Actions → Azure Static Web Apps.</p>
+      <p id="refreshStatus" class="footer-desc" style="margin-top:8px">Refreshed automatically every 15 minutes via GitHub Actions → Azure Static Web Apps.</p>
       <div id="footerUpdated" class="footer-updated" style="margin-top:12px"></div>
     </div>
   </div>
@@ -1881,11 +1881,11 @@ window.clearFav = function(){
 function renderFooter(){
   const m = D.meta||{};
   const ts = m.generatedAt ? new Date(m.generatedAt).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',dateStyle:'medium',timeStyle:'short'}) : 'Unknown';
-  document.getElementById('footerUpdated').textContent = `🕐 Last rebuilt: ${ts} IST`;
+  document.getElementById('footerUpdated').textContent = `🕐 Last refreshed: ${ts} IST`;
 
   const status = document.getElementById('refreshStatus');
   if(status && m.isLiveData === false){
-    status.textContent = 'Rebuilt every 15 minutes; live source unavailable, showing fallback data.';
+    status.textContent = 'Refreshed every 15 minutes; live source unavailable, showing fallback data.';
   }
 
   const warns = m.isLiveData === false
