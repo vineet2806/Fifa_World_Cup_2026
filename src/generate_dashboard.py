@@ -533,11 +533,15 @@ def _normalize_venue_ids(matches: list, venues: list) -> list:
     return out
 
 
-def merge_matches(fallback_matches: list, fetched_matches: list) -> list:
+def merge_matches(fallback_matches: list, fetched_matches: list, use_utc_key: bool = False) -> list:
     """Merge fetched match data into fallback, updating scores, status, and local time offset.
 
     Matches are keyed by (date, team1_id, team2_id) so that sources using
     full names or different IDs can still update the canonical fallback rows.
+
+    use_utc_key: when True, fallback matches are keyed by dateUTC instead of date.
+    Use this when merging ESPN data whose `date` is always the UTC date, while the
+    fallback `date` is the local venue date (which can differ for late-night UTC kickoffs).
     """
     if not fetched_matches:
         return fallback_matches
@@ -549,13 +553,24 @@ def merge_matches(fallback_matches: list, fetched_matches: list) -> list:
             m.get("team2", ""),
         )
 
+    def _key_utc(m):
+        # Use dateUTC when available so late-night UTC matches (where local date ≠ UTC date)
+        # correctly match against ESPN which always reports the UTC kickoff date.
+        return (
+            m.get("dateUTC", m.get("date", "")),
+            m.get("team1", ""),
+            m.get("team2", ""),
+        )
+
     fetched_by_key = {}
     for m in fetched_matches:
         fetched_by_key[_key(m)] = m
 
+    key_fn = _key_utc if use_utc_key else _key
+
     merged = []
     for m in fallback_matches:
-        key = _key(m)
+        key = key_fn(m)
         fm = fetched_by_key.get(key)
         reversed_key = False
         if not fm:
@@ -905,8 +920,10 @@ def collect_data() -> dict:
     if schedule_matches:
         matches = merge_matches(matches, schedule_matches)
     # ESPN merged last — real-time scores override community sources during match hours
+    # use_utc_key=True: ESPN's `date` is the UTC kickoff date; fallback `date` is
+    # the local venue date which can be a day earlier for late-night UTC matches.
     if espn_matches:
-        matches = merge_matches(matches, espn_matches)
+        matches = merge_matches(matches, espn_matches, use_utc_key=True)
 
     # Ensure every match uses a canonical venue ID the frontend understands.
     matches = _normalize_venue_ids(matches, fallback.get("venues", []))
