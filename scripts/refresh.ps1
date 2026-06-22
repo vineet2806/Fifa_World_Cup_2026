@@ -87,17 +87,15 @@ if ($lastRefresh -ge $slotStart) {
 Set-Location $root
 
 # 1. Pull latest code
-# TEMPORARILY DISABLED — re-enable after ESPN fix is on origin
-# git fetch --quiet origin main
-# $fetchExit = $LASTEXITCODE
-# git reset --hard origin/main --quiet
-# $resetExit = $LASTEXITCODE
-# if ($fetchExit -eq 0 -and $resetExit -eq 0) {
-#     Log "git: synced to origin/main"
-# } else {
-#     Log "git: WARN -- fetch=$fetchExit reset=$resetExit (continuing with current code)"
-# }
-Log "git: pull skipped (ESPN deploy in progress)"
+git fetch --quiet origin main
+$fetchExit = $LASTEXITCODE
+git reset --hard origin/main --quiet
+$resetExit = $LASTEXITCODE
+if ($fetchExit -eq 0 -and $resetExit -eq 0) {
+    Log "git: synced to origin/main"
+} else {
+    Log "git: WARN -- fetch=$fetchExit reset=$resetExit (continuing with current code)"
+}
 
 # 2. Regenerate dashboard
 python src/generate_dashboard.py

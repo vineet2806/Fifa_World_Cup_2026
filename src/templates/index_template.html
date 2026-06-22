@@ -943,6 +943,23 @@ document.addEventListener('visibilitychange', function(){
   if(!document.hidden) tickLiveClock();
 });
 
+// Auto-reload the page every 5 minutes so the browser always picks up the
+// latest HTML deployed by the Task Scheduler (which also runs every 5 min).
+// Only reload when the tab is hidden to avoid interrupting an active user.
+// On tab-focus after >5 min away, reload immediately so scores are current.
+(function(){
+  var RELOAD_MS = 5 * 60 * 1000;
+  var lastReload = Date.now();
+  setInterval(function(){
+    if(document.hidden){ location.reload(); }
+  }, RELOAD_MS);
+  document.addEventListener('visibilitychange', function(){
+    if(!document.hidden && (Date.now() - lastReload) >= RELOAD_MS){
+      location.reload();
+    }
+  });
+})();
+
 // Enrich every match with IST and local-display fields
 function enrichMatchTimes(){
   (D.matches||[]).forEach(m => {

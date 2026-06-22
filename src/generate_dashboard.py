@@ -423,7 +423,12 @@ def normalize_espn_data(raw: dict) -> list:
                 display_clock = comp.get("status", {}).get("displayClock", "")
                 if display_clock:
                     try:
-                        espn_minute = int(display_clock.split(':')[0].split('+')[0])
+                        # displayClock is "62'" or "90'+7'" — strip apostrophes and
+                        # take only the leading digits before ':' or '+'
+                        import re as _re
+                        m_min = _re.match(r'(\d+)', display_clock)
+                        if m_min:
+                            espn_minute = int(m_min.group(1))
                     except Exception:
                         pass
             matches.append({
