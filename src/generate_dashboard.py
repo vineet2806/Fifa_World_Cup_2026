@@ -382,6 +382,58 @@ def normalize_openfootball_data(raw: dict) -> list:
     return matches
 
 
+def build_knockout_slots(schedule_raw: dict, espn_matches: list) -> list:
+    """Build placeholder entries for all knockout round fixtures from schedule.json.
+
+    Uses ESPN matches (keyed by date+timeUTC) to fill in the actual team names
+    for fixtures that have been decided. Remaining fixtures show team1/team2 as
+    stage-based placeholders (e.g. 'ko74h') which the frontend renders as TBD.
+    """
+    espn_by_dt = {(m.get("date", ""), m.get("timeUTC", "")): m for m in espn_matches}
+    raw_list = schedule_raw if isinstance(schedule_raw, list) else schedule_raw.get("matches", [])
+    slots = []
+    for i, m in enumerate(raw_list):
+        stage = m.get("stage", "").strip()
+        if stage.lower() == "group stage":
+            continue
+        try:
+            t_utc = _parse_utc_time(m.get("time_et", "") + " UTC-4")
+            date = m.get("date", "")
+            match_num = int(m.get("match_number", 1000 + i))
+            em = espn_by_dt.get((date, t_utc))
+            if em:
+                slot = dict(em)
+                slot["stage"] = stage
+                slot["matchday"] = match_num
+                slot["venue"] = em.get("venue") or m.get("venue", "")
+                slot["city"] = em.get("city") or m.get("city", "")
+            else:
+                slot = {
+                    "id": f"ko{match_num}",
+                    "group": "",
+                    "stage": stage,
+                    "matchday": match_num,
+                    "date": date,
+                    "dateUTC": date,
+                    "timeUTC": t_utc,
+                    "team1": f"ko{match_num}h",
+                    "team2": f"ko{match_num}a",
+                    "score1": None,
+                    "score2": None,
+                    "status": "UPCOMING",
+                    "venue": m.get("venue", ""),
+                    "city": m.get("city", ""),
+                    "timeOffset": "UTC-4",
+                    "timeLocal": "",
+                    "label_team1": m.get("team_a", "TBD"),
+                    "label_team2": m.get("team_b", "TBD"),
+                }
+            slots.append(slot)
+        except Exception:
+            continue
+    return slots
+
+
 def normalize_espn_data(raw: dict) -> list:
     """Parse ESPN scoreboard API into canonical match dicts with live scores.
 
@@ -700,9 +752,11 @@ def validate_data(data: dict) -> list:
         warnings.append(f"Only {len(teams)} teams found (expected 48)")
 
     team_ids = {t["id"] for t in teams}
+    import re as _re_val
     for m in matches:
-        if m.get("team1") and m["team1"] not in team_ids:
-            warnings.append(f"Unknown team1 code: {m['team1']} in match {m.get('id')}")
+        t1 = m.get("team1", "")
+        if t1 and t1 not in team_ids and not _re_val.match(r'^ko\d+[ha]$', t1):
+            warnings.append(f"Unknown team1 code: {t1} in match {m.get('id')}")
         if not m.get("date"):
             warnings.append(f"Match {m.get('id')} missing date")
 
@@ -940,28 +994,15 @@ def collect_data() -> dict:
     # use_utc_key=True: ESPN's `date` is the UTC kickoff date; fallback `date` is
     # the local venue date which can be a day earlier for late-night UTC matches.
     if espn_matches:
-        # Build a (date, timeUTC) → schedule slot lookup for knockout rounds so
-        # ESPN-only matches (no fallback entry) get venue/city/stage enriched.
-        ko_by_dt: dict = {}
-        if schedule_raw:
-            raw_list = schedule_raw if isinstance(schedule_raw, list) else schedule_raw.get("matches", [])
-            for sm in raw_list:
-                stage = sm.get("stage", "").strip()
-                if stage.lower() == "group stage":
-                    continue
-                t_utc = _parse_utc_time(sm.get("time_et", "") + " UTC-4")
-                ko_by_dt[(sm.get("date", ""), t_utc)] = sm
-        for em in espn_matches:
-            key_dt = (em.get("date", ""), em.get("timeUTC", ""))
-            sm = ko_by_dt.get(key_dt)
-            if sm:
-                if not em.get("venue"):
-                    em["venue"] = sm.get("venue", "")
-                if not em.get("city"):
-                    em["city"] = sm.get("city", "")
-                em["stage"] = sm.get("stage", "")
-                em["matchday"] = sm.get("match_number", em.get("matchday", 1))
-        matches = merge_matches(matches, espn_matches, use_utc_key=True, include_unmatched=True)
+        matches = merge_matches(matches, espn_matches, use_utc_key=True)
+
+    # Append all knockout round fixtures from schedule.json as dated slots.
+    # Slots where ESPN already knows the teams get real team IDs; the rest
+    # show placeholder IDs (rendered as TBD by the frontend).
+    if schedule_raw:
+        ko_slots = build_knockout_slots(schedule_raw, espn_matches)
+        matches.extend(ko_slots)
+        log.info(f"Knockout slots added: {len(ko_slots)}")
 
     # Ensure every match uses a canonical venue ID the frontend understands.
     matches = _normalize_venue_ids(matches, fallback.get("venues", []))

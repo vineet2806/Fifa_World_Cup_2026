@@ -1024,6 +1024,18 @@ function flagIcon(id, size = 'sm') {
 
 function team(id){ return TEAMS[id] || {id, name:id, flag:'🏳️'} }
 function venue(id){ return VENUES_MAP[id] || {name:id||'TBD', city:''} }
+// Knockout placeholder IDs look like "ko74h" / "ko74a"
+function isTBD(id){ return id && /^ko\d+[ha]$/.test(id); }
+function teamName(m, side){
+  const id = m['team'+side];
+  if(isTBD(id)) return m['label_team'+side] || 'TBD';
+  return team(id).name;
+}
+function teamFlag(m, side){
+  const id = m['team'+side];
+  if(isTBD(id)) return '<span style="font-size:1.4rem">🏳️</span>';
+  return flagIcon(id, 'lg');
+}
 
 function pad(n){ return String(n).padStart(2,'0') }
 
@@ -1250,23 +1262,25 @@ function matchCardHTML(m, size){
 
   const localT = '';
 
-  return `<article class="${cls}" aria-label="${t1.name} vs ${t2.name}">
+  const n1 = teamName(m, 1), n2 = teamName(m, 2);
+  const stageBadge = m.stage ? m.stage : (m.group ? `Group ${m.group} MD${m.matchday||''}` : `MD${m.matchday||''}`);
+  return `<article class="${cls}" aria-label="${n1} vs ${n2}">
     <div class="match-header">
       <div class="match-meta">
-        <span class="badge badge-group">Group ${m.group||''} MD${m.matchday||''}</span>
+        <span class="badge badge-group">${stageBadge}</span>
         ${statusBadge(m.status, m.minute)}
         ${isFavMatch && favTeam ? '<span class="badge" style="background:var(--gold-d);color:var(--gold);border:1px solid rgba(251,191,36,.3)">⭐ Fav</span>' : ''}
       </div>
     </div>
     <div class="match-teams">
       <div class="match-team">
-        <div class="team-flag" aria-label="${t1.name}">${flagIcon(t1.id, 'lg')}</div>
-        <div class="team-name ${size==='sm'?'team-name-sm':''}">${t1.name}</div>
+        <div class="team-flag" aria-label="${n1}">${teamFlag(m, 1)}</div>
+        <div class="team-name ${size==='sm'?'team-name-sm':''}">${n1}</div>
       </div>
       <div style="text-align:center">${scoreHTML}</div>
       <div class="match-team">
-        <div class="team-flag" aria-label="${t2.name}">${flagIcon(t2.id, 'lg')}</div>
-        <div class="team-name ${size==='sm'?'team-name-sm':''}">${t2.name}</div>
+        <div class="team-flag" aria-label="${n2}">${teamFlag(m, 2)}</div>
+        <div class="team-name ${size==='sm'?'team-name-sm':''}">${n2}</div>
       </div>
     </div>
     ${scorers}
@@ -1376,13 +1390,16 @@ function renderSchedule(){
       const localTimeLabel = m.timeLocalDisplay
         ? `<span style="color:var(--text-d);font-size:.68rem;display:block;margin-top:2px">${m.localDate||m.date} · ${m.timeLocalDisplay} ${m.timeOffset||''}</span>`
         : '';
+      const sn1 = teamName(m, 1), sn2 = teamName(m, 2);
+      const roundLabel = m.stage ? `<span class="badge badge-group" style="font-size:.68rem">${m.stage}</span>`
+                                  : `<span class="badge badge-group" style="font-size:.68rem">G${m.group||''}</span>`;
       return `<tr>
         <td style="white-space:nowrap;font-size:.78rem">${istDate||m.date||''}${localTimeLabel}</td>
         <td style="font-size:.78rem;white-space:nowrap">${m.timeIST||'—'} IST</td>
-        <td><div class="team-cell">${flagIcon(t1.id)} ${t1.name}</div></td>
+        <td><div class="team-cell">${isTBD(m.team1)?'🏳️':flagIcon(t1.id)} ${sn1}</div></td>
         ${scoreCell}
-        <td><div class="team-cell">${flagIcon(t2.id)} ${t2.name}</div></td>
-        <td><span class="badge badge-group" style="font-size:.68rem">G${m.group||''}</span></td>
+        <td><div class="team-cell">${isTBD(m.team2)?'🏳️':flagIcon(t2.id)} ${sn2}</div></td>
+        <td>${roundLabel}</td>
         <td style="font-size:.75rem;white-space:nowrap">${v.name}, ${v.city}</td>
         <td>${statusBadge(m.status, m.minute)}</td>
         <td>${m.status==='UPCOMING'?`<button class="ics-btn" onclick="generateICS(${JSON.stringify(m).replace(/"/g,'&quot;')})">📅</button>`:'—'}</td>
