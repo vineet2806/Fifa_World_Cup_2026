@@ -891,7 +891,7 @@ def compute_insights(data: dict) -> dict:
         draw_prob /= total
         win2 /= total
 
-        match_probs.append({
+        prob = {
             "matchId": m["id"],
             "team1": t1,
             "team2": t2,
@@ -902,7 +902,12 @@ def compute_insights(data: dict) -> dict:
             "eloTeam1": round(adj_elo1),
             "eloTeam2": round(adj_elo2),
             "narrative": "",  # filled in below if Groq succeeds
-        })
+        }
+        if m.get("label_team1"):
+            prob["labelTeam1"] = m["label_team1"]
+        if m.get("label_team2"):
+            prob["labelTeam2"] = m["label_team2"]
+        match_probs.append(prob)
 
     # Groq LLM narratives (optional — requires GROQ_API_KEY env var)
     upcoming_for_groq = [m for m in matches if m.get("status") in ("UPCOMING", None)]

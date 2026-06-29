@@ -1864,14 +1864,18 @@ function renderInsights(){
   const probs = (ins.matchProbabilities||[]).slice(0,8);
   document.getElementById('matchProbs').innerHTML = probs.map(p => {
     const t1=team(p.team1), t2=team(p.team2);
-    const narrativeHtml = p.narrative
+    const n1 = isTBD(p.team1) ? (p.labelTeam1||'TBD') : t1.name;
+    const n2 = isTBD(p.team2) ? (p.labelTeam2||'TBD') : t2.name;
+    const f1 = isTBD(p.team1) ? '🏳️' : t1.flag;
+    const f2 = isTBD(p.team2) ? '🏳️' : t2.flag;
+    const narrativeHtml = p.narrative && !isTBD(p.team1) && !isTBD(p.team2)
       ? `<div style="font-size:.72rem;color:var(--text-m);margin-top:8px;font-style:italic;line-height:1.4;padding:0 4px">${p.narrative}</div>`
       : '';
     return `<div class="prob-card">
       <div class="prob-teams">
-        <div class="prob-team">${t1.flag} ${t1.name}</div>
+        <div class="prob-team">${f1} ${n1}</div>
         <div class="prob-date">${p.date||''}</div>
-        <div class="prob-team" style="flex-direction:row-reverse">${t2.name} ${t2.flag}</div>
+        <div class="prob-team" style="flex-direction:row-reverse">${n2} ${f2}</div>
       </div>
       <div class="prob-bars">
         <div class="prob-bar-w" style="flex:${p.win1Pct}"></div>
