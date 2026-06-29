@@ -433,7 +433,7 @@ def normalize_espn_data(raw: dict) -> list:
                         pass
             matches.append({
                 "id": hashlib.md5(f"{date}_{team1}_{team2}".encode()).hexdigest()[:8],
-                "group": "", "matchday": 1, "date": date, "timeUTC": time_utc,
+                "group": "", "matchday": 1, "date": date, "dateUTC": date, "timeUTC": time_utc,
                 "team1": team1, "team2": team2, "score1": score1, "score2": score2,
                 "status": status, "venue": "", "city": "", "timeOffset": "", "timeLocal": "",
                 "espnMinute": espn_minute,
@@ -538,7 +538,8 @@ def _normalize_venue_ids(matches: list, venues: list) -> list:
     return out
 
 
-def merge_matches(fallback_matches: list, fetched_matches: list, use_utc_key: bool = False) -> list:
+def merge_matches(fallback_matches: list, fetched_matches: list, use_utc_key: bool = False,
+                  include_unmatched: bool = False) -> list:
     """Merge fetched match data into fallback, updating scores, status, and local time offset.
 
     Matches are keyed by (date, team1_id, team2_id) so that sources using
@@ -547,6 +548,9 @@ def merge_matches(fallback_matches: list, fetched_matches: list, use_utc_key: bo
     use_utc_key: when True, fallback matches are keyed by dateUTC instead of date.
     Use this when merging ESPN data whose `date` is always the UTC date, while the
     fallback `date` is the local venue date (which can differ for late-night UTC kickoffs).
+
+    include_unmatched: when True, any fetched matches with no corresponding fallback entry
+    are appended to the output (e.g. knockout rounds not yet in manual_fallbacks.json).
     """
     if not fetched_matches:
         return fallback_matches
@@ -573,6 +577,7 @@ def merge_matches(fallback_matches: list, fetched_matches: list, use_utc_key: bo
 
     key_fn = _key_utc if use_utc_key else _key
 
+    matched_fetched_keys: set = set()
     merged = []
     for m in fallback_matches:
         key = key_fn(m)
@@ -584,6 +589,7 @@ def merge_matches(fallback_matches: list, fetched_matches: list, use_utc_key: bo
             if fm:
                 reversed_key = True
         if fm:
+            matched_fetched_keys.add(_key(fm))
             m = dict(m)
             # Update scores if fetched data has them
             if fm.get("score1") is not None:
@@ -603,6 +609,12 @@ def merge_matches(fallback_matches: list, fetched_matches: list, use_utc_key: bo
             if fm.get("espnMinute") is not None:
                 m["espnMinute"] = fm["espnMinute"]
         merged.append(m)
+
+    if include_unmatched:
+        for fm in fetched_matches:
+            if _key(fm) not in matched_fetched_keys:
+                merged.append(fm)
+
     return merged
 
 
@@ -928,7 +940,28 @@ def collect_data() -> dict:
     # use_utc_key=True: ESPN's `date` is the UTC kickoff date; fallback `date` is
     # the local venue date which can be a day earlier for late-night UTC matches.
     if espn_matches:
-        matches = merge_matches(matches, espn_matches, use_utc_key=True)
+        # Build a (date, timeUTC) → schedule slot lookup for knockout rounds so
+        # ESPN-only matches (no fallback entry) get venue/city/stage enriched.
+        ko_by_dt: dict = {}
+        if schedule_raw:
+            raw_list = schedule_raw if isinstance(schedule_raw, list) else schedule_raw.get("matches", [])
+            for sm in raw_list:
+                stage = sm.get("stage", "").strip()
+                if stage.lower() == "group stage":
+                    continue
+                t_utc = _parse_utc_time(sm.get("time_et", "") + " UTC-4")
+                ko_by_dt[(sm.get("date", ""), t_utc)] = sm
+        for em in espn_matches:
+            key_dt = (em.get("date", ""), em.get("timeUTC", ""))
+            sm = ko_by_dt.get(key_dt)
+            if sm:
+                if not em.get("venue"):
+                    em["venue"] = sm.get("venue", "")
+                if not em.get("city"):
+                    em["city"] = sm.get("city", "")
+                em["stage"] = sm.get("stage", "")
+                em["matchday"] = sm.get("match_number", em.get("matchday", 1))
+        matches = merge_matches(matches, espn_matches, use_utc_key=True, include_unmatched=True)
 
     # Ensure every match uses a canonical venue ID the frontend understands.
     matches = _normalize_venue_ids(matches, fallback.get("venues", []))
